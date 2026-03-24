@@ -620,6 +620,97 @@
   }
   .alpha-rule-text strong { color: var(--text-secondary); }
 
+  /* Pagination controls */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .pagination button {
+    padding: 12px 28px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+  }
+  .pagination button:hover:not(:disabled) {
+    border-color: var(--border-hover);
+    color: var(--accent-gold);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+  }
+  .pagination button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .pagination .page-info {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  /* Tables grid for learning tables */
+  .tables-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .table-block h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--accent-gold);
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+  .table-block .frac-table td:first-child {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  /* Reference section tabs */
+  .ref-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .ref-tab {
+    padding: 10px 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.25s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex: 1;
+    text-align: center;
+  }
+  .ref-tab:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+  .ref-tab.active {
+    background: rgba(232,168,73,0.12);
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+  }
+
   .hidden { display: none !important; }
 
   /* Scrollbar */
@@ -697,6 +788,16 @@
           <span class="icon">AZ</span>
           <span class="label">Alphabet Tool</span>
           <span class="sublabel">Opposite &amp; Position</span>
+        </button>
+        <button class="menu-btn" data-accent="gold" onclick="showLearningTables()">
+          <span class="icon">&times;</span>
+          <span class="label">Learning Tables</span>
+          <span class="sublabel">1 - 50 (Paginated)</span>
+        </button>
+        <button class="menu-btn" data-accent="amber" onclick="showRefTables()">
+          <span class="icon">#</span>
+          <span class="label">Sq / Cube / Consec</span>
+          <span class="sublabel">Reference Tables</span>
         </button>
       </div>
     </div>
@@ -828,6 +929,67 @@
     </div>
   </div>
 
+  <!-- Learning Tables Screen -->
+  <div id="learning-tables-screen" class="hidden">
+    <div class="app-header">
+      <h1>Learning Tables</h1>
+      <p>Multiplication Tables 1 - 50</p>
+    </div>
+    <div class="pagination">
+      <button onclick="prevTablePage()" id="tbl-prev-btn">&larr; Previous</button>
+      <span class="page-info" id="tbl-page-info">Page 1 / 10</span>
+      <button onclick="nextTablePage()" id="tbl-next-btn">Next &rarr;</button>
+    </div>
+    <div class="tables-grid" id="tables-grid"></div>
+    <div class="pagination">
+      <button onclick="prevTablePage()" id="tbl-prev-btn2">&larr; Previous</button>
+      <span class="page-info" id="tbl-page-info2">Page 1 / 10</span>
+      <button onclick="nextTablePage()" id="tbl-next-btn2">Next &rarr;</button>
+    </div>
+    <div style="text-align:center">
+      <button class="back-btn" onclick="goMenu()">&larr; Back to Menu</button>
+    </div>
+  </div>
+
+  <!-- Reference Tables Screen (Squares, Cubes, Consecutive) -->
+  <div id="ref-tables-screen" class="hidden">
+    <div class="app-header">
+      <h1>Reference Tables</h1>
+      <p>Squares, Cubes &amp; Consecutive Products</p>
+    </div>
+    <div class="ref-tabs">
+      <button class="ref-tab active" onclick="switchRefTab('squares')" id="ref-tab-sq">Squares (1-50)</button>
+      <button class="ref-tab" onclick="switchRefTab('cubes')" id="ref-tab-cu">Cubes (1-30)</button>
+      <button class="ref-tab" onclick="switchRefTab('consec')" id="ref-tab-co">Consecutive</button>
+    </div>
+    <div class="tool-card">
+      <div id="ref-sq-section">
+        <h3>Squares (n&sup2;) &mdash; 1 to 50</h3>
+        <table class="frac-table">
+          <thead><tr><th>n</th><th>n&sup2;</th><th>n</th><th>n&sup2;</th></tr></thead>
+          <tbody id="ref-sq-body"></tbody>
+        </table>
+      </div>
+      <div id="ref-cu-section" class="hidden">
+        <h3>Cubes (n&sup3;) &mdash; 1 to 30</h3>
+        <table class="frac-table">
+          <thead><tr><th>n</th><th>n&sup3;</th><th>n</th><th>n&sup3;</th></tr></thead>
+          <tbody id="ref-cu-body"></tbody>
+        </table>
+      </div>
+      <div id="ref-co-section" class="hidden">
+        <h3>Consecutive Products &mdash; n &times; (n+1)</h3>
+        <table class="frac-table">
+          <thead><tr><th>n</th><th>n+1</th><th>Product</th></tr></thead>
+          <tbody id="ref-co-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <button class="back-btn" onclick="goMenu()">&larr; Back to Menu</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -839,7 +1001,7 @@ const limits = { tables: [1, 50], squares: [1, 100], cubes: [1, 50] };
 const labels = { tables: 'Multiplication Tables', squares: 'Squares', cubes: 'Cubes', 'frac-quiz': 'Fraction \u2194 Percentage' };
 
 function hideAll() {
-  ['menu-screen','range-screen','quiz-screen','fraction-screen','converter-screen','alphabet-screen']
+  ['menu-screen','range-screen','quiz-screen','fraction-screen','converter-screen','alphabet-screen','learning-tables-screen','ref-tables-screen']
     .forEach(id => document.getElementById(id).classList.add('hidden'));
 }
 
@@ -1197,6 +1359,195 @@ function processAlphabet() {
     card.appendChild(row);
     container.appendChild(card);
   });
+}
+
+// ======================== LEARNING TABLES ========================
+var tableCurrentPage = 0;
+var tablesPerPage = 5;
+var tableTotalPages = Math.ceil(50 / tablesPerPage);
+
+function showLearningTables() {
+  hideAll();
+  tableCurrentPage = 0;
+  animateScreen('learning-tables-screen');
+  renderTablePage();
+}
+
+function renderTablePage() {
+  var grid = document.getElementById('tables-grid');
+  grid.textContent = '';
+  var start = tableCurrentPage * tablesPerPage + 1;
+  var end = Math.min(start + tablesPerPage - 1, 50);
+
+  for (var n = start; n <= end; n++) {
+    var block = document.createElement('div');
+    block.className = 'table-block tool-card';
+    block.style.opacity = '0';
+    block.style.animation = 'fadeSlideUp 0.4s ease forwards';
+    block.style.animationDelay = ((n - start) * 0.08) + 's';
+
+    var h4 = document.createElement('h4');
+    h4.textContent = 'Table of ' + n;
+    block.appendChild(h4);
+
+    var table = document.createElement('table');
+    table.className = 'frac-table';
+    var thead = document.createElement('thead');
+    var headRow = document.createElement('tr');
+    ['Multiplication', 'Result'].forEach(function(t) {
+      var th = document.createElement('th');
+      th.textContent = t;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    for (var m = 1; m <= 10; m++) {
+      var tr = document.createElement('tr');
+      var td1 = document.createElement('td');
+      td1.textContent = n + ' \u00d7 ' + m;
+      var td2 = document.createElement('td');
+      td2.textContent = (n * m).toLocaleString();
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+    block.appendChild(table);
+    grid.appendChild(block);
+  }
+
+  updateTablePagination();
+}
+
+function updateTablePagination() {
+  var info = 'Page ' + (tableCurrentPage + 1) + ' / ' + tableTotalPages;
+  document.getElementById('tbl-page-info').textContent = info;
+  document.getElementById('tbl-page-info2').textContent = info;
+  document.getElementById('tbl-prev-btn').disabled = (tableCurrentPage === 0);
+  document.getElementById('tbl-prev-btn2').disabled = (tableCurrentPage === 0);
+  document.getElementById('tbl-next-btn').disabled = (tableCurrentPage === tableTotalPages - 1);
+  document.getElementById('tbl-next-btn2').disabled = (tableCurrentPage === tableTotalPages - 1);
+}
+
+function nextTablePage() {
+  if (tableCurrentPage < tableTotalPages - 1) {
+    tableCurrentPage++;
+    renderTablePage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function prevTablePage() {
+  if (tableCurrentPage > 0) {
+    tableCurrentPage--;
+    renderTablePage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ======================== REFERENCE TABLES ========================
+function showRefTables() {
+  hideAll();
+  animateScreen('ref-tables-screen');
+  buildSquaresTable();
+  buildCubesTable();
+  buildConsecTable();
+  switchRefTab('squares');
+}
+
+function switchRefTab(tab) {
+  document.getElementById('ref-sq-section').classList.add('hidden');
+  document.getElementById('ref-cu-section').classList.add('hidden');
+  document.getElementById('ref-co-section').classList.add('hidden');
+  document.getElementById('ref-tab-sq').classList.remove('active');
+  document.getElementById('ref-tab-cu').classList.remove('active');
+  document.getElementById('ref-tab-co').classList.remove('active');
+
+  if (tab === 'squares') {
+    document.getElementById('ref-sq-section').classList.remove('hidden');
+    document.getElementById('ref-tab-sq').classList.add('active');
+  } else if (tab === 'cubes') {
+    document.getElementById('ref-cu-section').classList.remove('hidden');
+    document.getElementById('ref-tab-cu').classList.add('active');
+  } else {
+    document.getElementById('ref-co-section').classList.remove('hidden');
+    document.getElementById('ref-tab-co').classList.add('active');
+  }
+}
+
+function buildSquaresTable() {
+  var tbody = document.getElementById('ref-sq-body');
+  tbody.textContent = '';
+  for (var i = 1; i <= 25; i++) {
+    var j = i + 25;
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    td1.textContent = i;
+    td1.style.cssText = 'font-weight:700; color:var(--text-primary);';
+    var td2 = document.createElement('td');
+    td2.textContent = (i * i).toLocaleString();
+    td2.style.color = 'var(--accent-gold)';
+    var td3 = document.createElement('td');
+    td3.textContent = j;
+    td3.style.cssText = 'font-weight:700; color:var(--text-primary);';
+    var td4 = document.createElement('td');
+    td4.textContent = (j * j).toLocaleString();
+    td4.style.color = 'var(--accent-gold)';
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    tr.appendChild(td4);
+    tbody.appendChild(tr);
+  }
+}
+
+function buildCubesTable() {
+  var tbody = document.getElementById('ref-cu-body');
+  tbody.textContent = '';
+  for (var i = 1; i <= 15; i++) {
+    var j = i + 15;
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    td1.textContent = i;
+    td1.style.cssText = 'font-weight:700; color:var(--text-primary);';
+    var td2 = document.createElement('td');
+    td2.textContent = (i * i * i).toLocaleString();
+    td2.style.color = 'var(--accent-amber)';
+    var td3 = document.createElement('td');
+    td3.textContent = j;
+    td3.style.cssText = 'font-weight:700; color:var(--text-primary);';
+    var td4 = document.createElement('td');
+    td4.textContent = (j * j * j).toLocaleString();
+    td4.style.color = 'var(--accent-amber)';
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    tr.appendChild(td4);
+    tbody.appendChild(tr);
+  }
+}
+
+function buildConsecTable() {
+  var tbody = document.getElementById('ref-co-body');
+  tbody.textContent = '';
+  for (var n = 1; n <= 30; n++) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    td1.textContent = n;
+    td1.style.cssText = 'font-weight:700; color:var(--text-primary);';
+    var td2 = document.createElement('td');
+    td2.textContent = n + 1;
+    td2.style.color = 'var(--text-secondary)';
+    var td3 = document.createElement('td');
+    td3.textContent = (n * (n + 1)).toLocaleString();
+    td3.style.cssText = 'font-weight:700; color:var(--accent-teal);';
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    tbody.appendChild(tr);
+  }
 }
 
 function buildAlphaRefTable() {
