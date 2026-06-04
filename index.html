@@ -2,1401 +2,764 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Math Practice - Bank Exam Prep</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Math Practice - Speed Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap');
-
-  :root {
-    --bg-deep: #1a1612;
-    --bg-card: rgba(255,245,230,0.04);
-    --bg-card-hover: rgba(255,245,230,0.08);
-    --border: rgba(255,220,170,0.1);
-    --border-hover: rgba(255,190,100,0.35);
-    --text-primary: #f5ebe0;
-    --text-secondary: #a89a8a;
-    --text-muted: #6d6052;
-    --accent-gold: #e8a849;
-    --accent-amber: #d4813b;
-    --accent-rose: #c76a7a;
-    --accent-teal: #5ba88e;
-    --accent-sky: #6aafe6;
-    --accent-violet: #9b7ed8;
-    --grain-opacity: 0.03;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    background: var(--bg-deep);
-    color: var(--text-primary);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
-    position: relative;
-  }
-
-  /* Grain texture overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
-    opacity: var(--grain-opacity);
-    pointer-events: none;
-    z-index: 100;
-  }
-
-  /* Warm ambient glow */
-  body::after {
-    content: '';
-    position: fixed;
-    top: -30%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120%;
-    height: 60%;
-    background: radial-gradient(ellipse, rgba(232,168,73,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 560px;
-    padding: 10px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Header */
-  .app-header {
-    text-align: center;
-    margin-bottom: 40px;
-    padding: 28px 0 20px;
-  }
-  .app-header h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.6rem;
-    font-weight: 400;
-    color: var(--accent-gold);
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
-    text-shadow: 0 0 40px rgba(232,168,73,0.15);
-  }
-  .app-header p {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  /* Section titles */
-  .section-title {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: var(--text-muted);
-    margin-bottom: 16px;
-    padding-left: 4px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, var(--border), transparent);
-  }
-  .section-group {
-    margin-bottom: 36px;
-  }
-
-  /* Menu cards */
-  .menu-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .menu-grid.single-col {
-    grid-template-columns: 1fr;
-  }
-
-  .menu-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 24px 16px 20px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: var(--bg-card);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    text-align: center;
-    line-height: 1.3;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-
-  /* Accent top-border glow per card */
-  .menu-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 20%;
-    right: 20%;
-    height: 2px;
-    border-radius: 0 0 4px 4px;
-    transition: all 0.35s ease;
-    opacity: 0;
-  }
-
-  .menu-btn:hover {
-    background: var(--bg-card-hover);
-    border-color: var(--border-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,190,100,0.08);
-  }
-  .menu-btn:hover::before {
-    opacity: 1;
-    left: 10%;
-    right: 10%;
-  }
-  .menu-btn:active {
-    transform: translateY(-1px) scale(0.98);
-  }
-
-  /* Card accent colors */
-  .menu-btn[data-accent="gold"]::before { background: var(--accent-gold); }
-  .menu-btn[data-accent="amber"]::before { background: var(--accent-amber); }
-  .menu-btn[data-accent="rose"]::before { background: var(--accent-rose); }
-  .menu-btn[data-accent="teal"]::before { background: var(--accent-teal); }
-  .menu-btn[data-accent="sky"]::before { background: var(--accent-sky); }
-  .menu-btn[data-accent="violet"]::before { background: var(--accent-violet); }
-
-  .menu-btn[data-accent="gold"]:hover { box-shadow: 0 12px 40px rgba(232,168,73,0.08), 0 0 0 1px rgba(232,168,73,0.12); }
-  .menu-btn[data-accent="amber"]:hover { box-shadow: 0 12px 40px rgba(212,129,59,0.08), 0 0 0 1px rgba(212,129,59,0.12); }
-  .menu-btn[data-accent="rose"]:hover { box-shadow: 0 12px 40px rgba(199,106,122,0.08), 0 0 0 1px rgba(199,106,122,0.12); }
-  .menu-btn[data-accent="teal"]:hover { box-shadow: 0 12px 40px rgba(91,168,142,0.08), 0 0 0 1px rgba(91,168,142,0.12); }
-  .menu-btn[data-accent="sky"]:hover { box-shadow: 0 12px 40px rgba(106,175,230,0.08), 0 0 0 1px rgba(106,175,230,0.12); }
-  .menu-btn[data-accent="violet"]:hover { box-shadow: 0 12px 40px rgba(155,126,216,0.08), 0 0 0 1px rgba(155,126,216,0.12); }
-
-  .menu-btn .icon {
-    font-size: 1.6rem;
-    line-height: 1;
-    width: 52px;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: all 0.35s ease;
-  }
-  .menu-btn:hover .icon {
-    transform: scale(1.05);
-  }
-
-  .menu-btn[data-accent="gold"] .icon { color: var(--accent-gold); }
-  .menu-btn[data-accent="amber"] .icon { color: var(--accent-amber); }
-  .menu-btn[data-accent="rose"] .icon { color: var(--accent-rose); }
-  .menu-btn[data-accent="teal"] .icon { color: var(--accent-teal); }
-  .menu-btn[data-accent="sky"] .icon { color: var(--accent-sky); }
-  .menu-btn[data-accent="violet"] .icon { color: var(--accent-violet); }
-
-  .menu-btn .label { font-size: 0.85rem; font-weight: 600; }
-  .menu-btn .sublabel { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; }
-
-  /* Entrance animations */
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .menu-btn {
-    opacity: 0;
-    animation: fadeSlideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-  .menu-btn:nth-child(1) { animation-delay: 0.05s; }
-  .menu-btn:nth-child(2) { animation-delay: 0.1s; }
-  .menu-btn:nth-child(3) { animation-delay: 0.15s; }
-  .menu-btn:nth-child(4) { animation-delay: 0.2s; }
-
-  .app-header {
-    opacity: 0;
-    animation: fadeSlideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-  .section-title {
-    opacity: 0;
-    animation: fadeSlideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    animation-delay: 0.02s;
-  }
-
-  /* Range form */
-  .range-screen-inner { text-align: center; }
-  .range-screen-inner h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    color: var(--text-secondary);
-    margin-bottom: 28px;
-    font-weight: 400;
-  }
-  .range-form label {
-    display: block;
-    margin-bottom: 14px;
-    color: var(--text-muted);
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
-  .range-form input {
-    width: 100px;
-    padding: 14px;
-    font-size: 1.1rem;
-    text-align: center;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: var(--bg-card);
-    color: var(--text-primary);
-    margin: 0 8px;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.25s;
-    backdrop-filter: blur(8px);
-  }
-  .range-form input:focus {
-    outline: none;
-    border-color: var(--accent-gold);
-    box-shadow: 0 0 0 3px rgba(232,168,73,0.1);
-  }
-  .start-btn {
-    display: inline-block;
-    margin-top: 28px;
-    padding: 16px 52px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-    border-radius: 14px;
-    background: var(--accent-gold);
-    color: var(--bg-deep);
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .start-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(232,168,73,0.25);
-    background: #f0b65a;
-  }
-  .start-btn:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  /* Quiz */
-  .question {
-    text-align: center;
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.8rem;
-    font-weight: 400;
-    margin-bottom: 28px;
-    color: var(--text-primary);
-    padding: 32px 20px;
-    background: var(--bg-card);
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    backdrop-filter: blur(8px);
-    text-shadow: 0 0 40px rgba(232,168,73,0.08);
-    animation: fadeSlideUp 0.4s ease forwards;
-  }
-  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .opt-btn {
-    padding: 20px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: var(--bg-card);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    backdrop-filter: blur(8px);
-    position: relative;
-    overflow: hidden;
-  }
-  .opt-btn:hover {
-    border-color: var(--border-hover);
-    background: var(--bg-card-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  }
-  .opt-btn:active { transform: scale(0.97); }
-  .opt-btn.correct {
-    background: rgba(91,168,142,0.15);
-    border-color: var(--accent-teal);
-    color: #a8e6cf;
-    box-shadow: 0 0 20px rgba(91,168,142,0.1);
-  }
-  .opt-btn.wrong {
-    background: rgba(199,106,122,0.15);
-    border-color: var(--accent-rose);
-    color: #f5b7b7;
-    box-shadow: 0 0 20px rgba(199,106,122,0.1);
-  }
-  .opt-btn:disabled { cursor: default; }
-
-  /* Correct/wrong animation */
-  @keyframes correctPulse {
-    0% { box-shadow: 0 0 0 0 rgba(91,168,142,0.3); }
-    70% { box-shadow: 0 0 0 10px rgba(91,168,142,0); }
-    100% { box-shadow: 0 0 0 0 rgba(91,168,142,0); }
-  }
-  @keyframes wrongShake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
-  }
-  .opt-btn.correct { animation: correctPulse 0.6s ease; }
-  .opt-btn.wrong { animation: wrongShake 0.4s ease; }
-
-  /* Score bar */
-  .score-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding: 16px 20px;
-    background: var(--bg-card);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    backdrop-filter: blur(8px);
-  }
-  .score-bar .stat { display: flex; align-items: center; gap: 6px; }
-  .score-bar .streak { color: var(--accent-gold); }
-  .score-bar strong { color: var(--text-primary); font-size: 1.1rem; }
-
-  /* Streak fire effect */
-  @keyframes fireGlow {
-    0%, 100% { text-shadow: 0 0 8px rgba(232,168,73,0.4); }
-    50% { text-shadow: 0 0 16px rgba(232,168,73,0.7); }
-  }
-  .score-bar .streak.active {
-    animation: fireGlow 1s ease infinite;
-  }
-
-  /* Back button */
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 28px;
-    padding: 12px 28px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.25s;
-    letter-spacing: 0.5px;
-  }
-  .back-btn:hover {
-    border-color: var(--border-hover);
-    color: var(--accent-gold);
-    background: var(--bg-card);
-  }
-
-  /* Tool screens */
-  .tool-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 28px;
-    margin-bottom: 18px;
-    backdrop-filter: blur(8px);
-  }
-  .tool-card h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.15rem;
-    font-weight: 400;
-    color: var(--text-primary);
-    margin-bottom: 20px;
-  }
-
-  /* Fraction table */
-  .frac-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: 0.85rem;
-  }
-  .frac-table th {
-    background: rgba(255,255,255,0.03);
-    color: var(--accent-gold);
-    padding: 12px 14px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    border-bottom: 1px solid var(--border);
-  }
-  .frac-table th:first-child { border-radius: 10px 0 0 0; }
-  .frac-table th:last-child { border-radius: 0 10px 0 0; }
-  .frac-table td {
-    padding: 11px 14px;
-    text-align: center;
-    border-bottom: 1px solid rgba(255,220,170,0.04);
-    color: var(--text-secondary);
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-  .frac-table tr:hover td {
-    background: rgba(232,168,73,0.04);
-    color: var(--text-primary);
-  }
-  .frac-table .highlight td {
-    color: var(--accent-gold);
-    font-weight: 700;
-  }
-
-  /* Converter */
-  .converter-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-  .converter-row input {
-    flex: 1;
-    min-width: 80px;
-    padding: 14px 16px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: rgba(0,0,0,0.2);
-    color: var(--text-primary);
-    transition: all 0.25s;
-  }
-  .converter-row input:focus {
-    outline: none;
-    border-color: var(--accent-gold);
-    box-shadow: 0 0 0 3px rgba(232,168,73,0.1);
-  }
-  .converter-row .arrow {
-    color: var(--accent-gold);
-    font-size: 1.2rem;
-    font-weight: 700;
-    flex-shrink: 0;
-    opacity: 0.6;
-  }
-  .converter-row .result-box {
-    flex: 1;
-    min-width: 80px;
-    padding: 14px 16px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: rgba(0,0,0,0.2);
-    color: var(--accent-teal);
-    text-align: center;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .converter-label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-  .formula-text {
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    margin-top: 6px;
-    font-style: italic;
-  }
-
-  /* Alphabet tool */
-  .alpha-input-group {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    align-items: stretch;
-  }
-  .alpha-input-group input {
-    flex: 1;
-    padding: 16px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-align: center;
-    text-transform: uppercase;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: rgba(0,0,0,0.2);
-    color: var(--text-primary);
-    letter-spacing: 4px;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.25s;
-  }
-  .alpha-input-group input:focus {
-    outline: none;
-    border-color: var(--accent-violet);
-    box-shadow: 0 0 0 3px rgba(155,126,216,0.1);
-  }
-  .alpha-result {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .alpha-result-card {
-    background: rgba(0,0,0,0.2);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 18px;
-    text-align: center;
-    transition: all 0.3s;
-  }
-  .alpha-result-card:hover {
-    border-color: rgba(255,220,170,0.15);
-    background: rgba(0,0,0,0.3);
-  }
-  .alpha-result-card .card-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-    font-weight: 700;
-  }
-  .alpha-result-card .card-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.6rem;
-    font-weight: 400;
-    color: var(--accent-violet);
-  }
-  .alpha-result-card .card-value.opposite { color: var(--accent-rose); }
-  .alpha-result-card .card-value.position { color: var(--accent-sky); }
-
-  .alpha-rule-text {
-    margin-top: 18px;
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    line-height: 1.7;
-    padding: 14px 16px;
-    background: rgba(0,0,0,0.15);
-    border-radius: 12px;
-    border: 1px solid rgba(255,220,170,0.04);
-  }
-  .alpha-rule-text strong { color: var(--text-secondary); }
-
-  /* Pagination controls */
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    margin: 20px 0;
-  }
-  .pagination button {
-    padding: 12px 28px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--bg-card);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.25s;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    backdrop-filter: blur(8px);
-  }
-  .pagination button:hover:not(:disabled) {
-    border-color: var(--border-hover);
-    color: var(--accent-gold);
-    background: var(--bg-card-hover);
-    transform: translateY(-2px);
-  }
-  .pagination button:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
-  .pagination .page-info {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-
-  /* Tables grid for learning tables */
-  .tables-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-  .table-block h4 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.1rem;
-    font-weight: 400;
-    color: var(--accent-gold);
-    margin-bottom: 10px;
-    padding-left: 4px;
-  }
-  .table-block .frac-table td:first-child {
-    color: var(--text-primary);
-    font-weight: 700;
-  }
-
-  /* Reference section tabs */
-  .ref-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  .ref-tab {
-    padding: 10px 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--bg-card);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.25s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    flex: 1;
-    text-align: center;
-  }
-  .ref-tab:hover {
-    border-color: var(--border-hover);
-    color: var(--text-primary);
-  }
-  .ref-tab.active {
-    background: rgba(232,168,73,0.12);
-    border-color: var(--accent-gold);
-    color: var(--accent-gold);
-  }
-
-  .hidden { display: none !important; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  /* Screen transitions */
-  @keyframes screenIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .screen-animate {
-    animation: screenIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-
-  /* Responsive */
-  @media (max-width: 400px) {
-    .menu-grid { grid-template-columns: 1fr; }
-    .question { font-size: 2rem; }
-    .app-header h1 { font-size: 2rem; }
-  }
+:root {
+  --bg: #0a0c10;
+  --surface: #13151c;
+  --surface-2: #1b1e28;
+  --surface-3: #232734;
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.12);
+  --text: #e8e8f0;
+  --text-2: #8e8fa0;
+  --text-3: #505168;
+  --cyan: #22d3a8;
+  --cyan-dim: rgba(34,211,168,0.1);
+  --amber: #f5a623;
+  --amber-dim: rgba(245,166,35,0.1);
+  --indigo: #6366f1;
+  --indigo-dim: rgba(99,102,241,0.1);
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.12);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.12);
+  --pink: #ec4899;
+  --pink-dim: rgba(236,72,153,0.1);
+  --violet: #a78bfa;
+  --violet-dim: rgba(167,139,250,0.1);
+  --sky: #38bdf8;
+  --sky-dim: rgba(56,189,248,0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 9999;
+}
+body::after {
+  content: '';
+  position: fixed;
+  top: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140%;
+  height: 60%;
+  background: radial-gradient(ellipse, rgba(34,211,168,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+#app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 16px 100px;
+  position: relative;
+  z-index: 1;
+}
+.header {
+  text-align: center;
+  padding: 32px 0 24px;
+}
+.header h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.4rem;
+  font-weight: 400;
+  color: var(--cyan);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.header p {
+  color: var(--text-3);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+.tab-bar {
+  display: flex;
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 28px;
+  border: 1px solid var(--border);
+  position: sticky;
+  top: 8px;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.tab-btn.active {
+  background: var(--cyan);
+  color: var(--bg);
+  box-shadow: 0 4px 20px rgba(34,211,168,0.25);
+}
+.tab-btn:not(.active):hover { color: var(--text-2); }
+.section-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--text-3);
+  margin-bottom: 14px;
+  padding-left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--border), transparent);
+}
+.topics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.topic-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 22px 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Outfit', sans-serif;
+}
+.topic-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 2px;
+  border-radius: 0 0 4px 4px;
+  opacity: 0;
+  transition: all 0.3s;
+}
+.topic-card:hover {
+  background: var(--surface-2);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+.topic-card:hover::before { opacity: 1; left: 10%; right: 10%; }
+.topic-card:active { transform: translateY(0) scale(0.97); }
+.topic-card .tc-icon {
+  width: 46px; height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: transform 0.3s;
+}
+.topic-card:hover .tc-icon { transform: scale(1.08); }
+.topic-card .tc-label { font-size: 0.8rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+.topic-card .tc-sub { font-size: 0.65rem; font-weight: 500; color: var(--text-3); }
+.topic-card[data-color="cyan"]::before { background: var(--cyan); }
+.topic-card[data-color="cyan"] .tc-icon { color: var(--cyan); }
+.topic-card[data-color="amber"]::before { background: var(--amber); }
+.topic-card[data-color="amber"] .tc-icon { color: var(--amber); }
+.topic-card[data-color="pink"]::before { background: var(--pink); }
+.topic-card[data-color="pink"] .tc-icon { color: var(--pink); }
+.topic-card[data-color="indigo"]::before { background: var(--indigo); }
+.topic-card[data-color="indigo"] .tc-icon { color: var(--indigo); }
+.topic-card[data-color="green"]::before { background: var(--green); }
+.topic-card[data-color="green"] .tc-icon { color: var(--green); }
+.topic-card[data-color="violet"]::before { background: var(--violet); }
+.topic-card[data-color="violet"] .tc-icon { color: var(--violet); }
+.topic-card[data-color="sky"]::before { background: var(--sky); }
+.topic-card[data-color="sky"] .tc-icon { color: var(--sky); }
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 20px 0 0;
+}
+.detail-header h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--text);
+  flex: 1;
+}
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.25s;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.back-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: var(--cyan-dim);
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.card h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.82rem;
+}
+.data-table th {
+  background: rgba(255,255,255,0.025);
+  color: var(--cyan);
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-bottom: 1px solid var(--border);
+}
+.data-table th:first-child { border-radius: var(--radius-xs) 0 0 0; }
+.data-table th:last-child { border-radius: 0 var(--radius-xs) 0 0; }
+.data-table td {
+  padding: 9px 12px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-2);
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.data-table tr:hover td { background: rgba(34,211,168,0.03); }
+.data-table .col-key { font-weight: 700; color: var(--text); }
+.data-table .col-val { color: var(--cyan); font-weight: 600; }
+.data-table .col-val-2 { color: var(--amber); font-weight: 600; }
+.data-table .col-val-3 { color: var(--pink); font-weight: 600; }
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0;
+}
+.pagination button {
+  padding: 10px 24px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.25s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.pagination button:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); }
+.pagination button:disabled { opacity: 0.25; cursor: default; }
+.pagination .pg-info { font-size: 0.75rem; color: var(--text-3); font-weight: 600; }
+.converter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.converter-row input {
+  flex: 1;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(0,0,0,0.3);
+  color: var(--text);
+  text-align: center;
+  transition: all 0.25s;
+}
+.converter-row input:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px var(--cyan-dim);
+}
+.converter-row .arrow { color: var(--cyan); font-weight: 700; opacity: 0.5; }
+.converter-row .result-box {
+  flex: 1;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(0,0,0,0.3);
+  color: var(--cyan);
+  text-align: center;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.conv-label {
+  font-size: 0.65rem;
+  color: var(--text-3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+.conv-formula {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  margin-top: 6px;
+  font-style: italic;
+}
+.quiz-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: 0.82rem;
+  color: var(--text-2);
+}
+.quiz-bar .qb-stat { display: flex; align-items: center; gap: 5px; }
+.quiz-bar strong { color: var(--text); font-size: 1.05rem; }
+.quiz-bar .qb-streak { color: var(--amber); }
+@keyframes fireGlow {
+  0%,100% { text-shadow: 0 0 6px rgba(245,166,35,0.3); }
+  50% { text-shadow: 0 0 14px rgba(245,166,35,0.6); }
+}
+.quiz-bar .qb-streak.on-fire { animation: fireGlow 1s ease infinite; }
+.quiz-question {
+  text-align: center;
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.4rem;
+  font-weight: 400;
+  padding: 36px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  color: var(--text);
+  line-height: 1.3;
+}
+.quiz-question .qq-hint {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  margin-top: 8px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.quiz-input {
+  width: 100%;
+  padding: 18px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  transition: all 0.3s;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+.quiz-input:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 4px var(--cyan-dim);
+}
+.quiz-input.correct {
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px var(--green-dim);
+  color: var(--green);
+}
+.quiz-input.wrong {
+  border-color: var(--red);
+  box-shadow: 0 0 0 4px var(--red-dim);
+  color: var(--red);
+}
+.quiz-actions { display: flex; gap: 10px; }
+.quiz-btn {
+  flex: 1;
+  padding: 16px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.quiz-btn:active { transform: scale(0.96); }
+.btn-check {
+  background: var(--cyan);
+  color: var(--bg);
+}
+.btn-check:hover { box-shadow: 0 6px 24px rgba(34,211,168,0.3); transform: translateY(-1px); }
+.btn-check:disabled { opacity: 0.3; cursor: default; transform: none; box-shadow: none; }
+.btn-next {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-next:hover { border-color: var(--border-hover); background: var(--surface-3); }
+.quiz-feedback {
+  text-align: center;
+  padding: 16px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.quiz-feedback.fb-correct {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(52,211,153,0.2);
+}
+.quiz-feedback.fb-wrong {
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.quiz-feedback .fb-answer {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.1rem;
+  color: var(--green);
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim-up {
+  opacity: 0;
+  animation: fadeUp 0.45s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+.stagger-1 { animation-delay: 0.03s; }
+.stagger-2 { animation-delay: 0.06s; }
+.stagger-3 { animation-delay: 0.09s; }
+.stagger-4 { animation-delay: 0.12s; }
+.stagger-5 { animation-delay: 0.15s; }
+.stagger-6 { animation-delay: 0.18s; }
+.stagger-7 { animation-delay: 0.21s; }
+@keyframes wrongShake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+.shake { animation: wrongShake 0.4s ease; }
+@keyframes correctPulse {
+  0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(52,211,153,0); }
+  100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+}
+.pulse-green { animation: correctPulse 0.5s ease; }
+.hidden { display: none !important; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+@media (max-width: 380px) {
+  .topics-grid { grid-template-columns: 1fr; }
+  .quiz-question { font-size: 1.8rem; padding: 28px 16px; }
+  .header h1 { font-size: 2rem; }
+}
 </style>
 </head>
 <body>
-<div class="container">
-
-  <!-- Menu Screen -->
-  <div id="menu-screen">
-    <div class="app-header">
-      <h1>Math Practice</h1>
-      <p>Bank Exam Preparation</p>
-    </div>
-
-    <div class="section-group">
-      <div class="section-title">Quiz Mode</div>
-      <div class="menu-grid">
-        <button class="menu-btn" data-accent="gold" onclick="selectMode('tables')">
-          <span class="icon">&times;</span>
-          <span class="label">Tables</span>
-          <span class="sublabel">1 - 50</span>
-        </button>
-        <button class="menu-btn" data-accent="amber" onclick="selectMode('squares')">
-          <span class="icon">x&#xB2;</span>
-          <span class="label">Squares</span>
-          <span class="sublabel">1 - 100</span>
-        </button>
-        <button class="menu-btn" data-accent="rose" onclick="selectMode('cubes')">
-          <span class="icon">x&#xB3;</span>
-          <span class="label">Cubes</span>
-          <span class="sublabel">1 - 50</span>
-        </button>
-        <button class="menu-btn" data-accent="teal" onclick="selectMode('frac-quiz')">
-          <span class="icon">%</span>
-          <span class="label">Fraction &#8596; %</span>
-          <span class="sublabel">Bank Exam</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="section-group">
-      <div class="section-title">Reference &amp; Tools</div>
-      <div class="menu-grid">
-        <button class="menu-btn" data-accent="sky" onclick="showFractionTable()">
-          <span class="icon">&#189;</span>
-          <span class="label">Fraction Table</span>
-          <span class="sublabel">Important %</span>
-        </button>
-        <button class="menu-btn" data-accent="violet" onclick="showConverter()">
-          <span class="icon">&#176;</span>
-          <span class="label">% &#8596; Degree</span>
-          <span class="sublabel">Converter</span>
-        </button>
-        <button class="menu-btn" data-accent="rose" onclick="showAlphabetTool()">
-          <span class="icon">AZ</span>
-          <span class="label">Alphabet Tool</span>
-          <span class="sublabel">Opposite &amp; Position</span>
-        </button>
-        <button class="menu-btn" data-accent="gold" onclick="showLearningTables()">
-          <span class="icon">&times;</span>
-          <span class="label">Learning Tables</span>
-          <span class="sublabel">1 - 50 (Paginated)</span>
-        </button>
-        <button class="menu-btn" data-accent="amber" onclick="showRefTables()">
-          <span class="icon">#</span>
-          <span class="label">Sq / Cube / Consec</span>
-          <span class="sublabel">Reference Tables</span>
-        </button>
-      </div>
-    </div>
+<div id="app">
+  <div class="header">
+    <h1>Math Practice</h1>
+    <p>Speed Training</p>
   </div>
-
-  <!-- Range Screen -->
-  <div id="range-screen" class="hidden">
-    <div class="app-header">
-      <h1>Math Practice</h1>
-    </div>
-    <div class="range-screen-inner">
-      <h2 id="range-title"></h2>
-      <div class="range-form">
-        <label>Select range</label>
-        <div>
-          <input id="range-from" type="number" placeholder="From" min="1">
-          <span style="color:var(--text-muted); font-weight:600">to</span>
-          <input id="range-to" type="number" placeholder="To" min="1">
-        </div>
-        <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
-      </div>
-      <div style="text-align:center">
-        <button class="back-btn" onclick="goMenu()">&#8592; Back</button>
-      </div>
-    </div>
+  <div class="tab-bar" id="tab-bar">
+    <button class="tab-btn active" id="tab-learn">Learn</button>
+    <button class="tab-btn" id="tab-practice">Practice</button>
   </div>
-
-  <!-- Quiz Screen -->
-  <div id="quiz-screen" class="hidden">
-    <div class="score-bar">
-      <span class="stat">Score: <strong id="score">0</strong> / <strong id="total">0</strong></span>
-      <span class="stat streak" id="streak-container">Streak: <strong id="streak">0</strong></span>
-    </div>
-    <div class="question" id="question"></div>
-    <div class="options" id="options"></div>
-    <div style="text-align:center">
-      <button class="back-btn" onclick="goMenu()">&#8592; Back to Menu</button>
-    </div>
-  </div>
-
-  <!-- Fraction Table Screen -->
-  <div id="fraction-screen" class="hidden">
-    <div class="app-header">
-      <h1>Fraction &#8596; Percentage</h1>
-      <p>Important fractions for Bank Exams</p>
-    </div>
-    <div class="tool-card">
-      <table class="frac-table" id="frac-table">
-        <thead>
-          <tr>
-            <th>Fraction</th>
-            <th>Percentage</th>
-            <th>Decimal</th>
-          </tr>
-        </thead>
-        <tbody id="frac-table-body"></tbody>
-      </table>
-    </div>
-    <div style="text-align:center">
-      <button class="back-btn" onclick="goMenu()">&#8592; Back to Menu</button>
-    </div>
-  </div>
-
-  <!-- Converter Screen -->
-  <div id="converter-screen" class="hidden">
-    <div class="app-header">
-      <h1>% &#8596; Degree</h1>
-      <p>Percentage and Degree conversions</p>
-    </div>
-
-    <div class="tool-card">
-      <h3>Percentage &#8594; Degree</h3>
-      <div class="converter-label">Enter percentage value</div>
-      <div class="converter-row">
-        <input type="number" id="pct-input" placeholder="e.g. 25" oninput="convertPctToDeg()">
-        <span class="arrow">&#8594;</span>
-        <div class="result-box" id="deg-output">--</div>
-      </div>
-      <div class="formula-text">Formula: Degree = (Percentage / 100) x 360</div>
-    </div>
-
-    <div class="tool-card">
-      <h3>Degree &#8594; Percentage</h3>
-      <div class="converter-label">Enter degree value</div>
-      <div class="converter-row">
-        <input type="number" id="deg-input" placeholder="e.g. 90" oninput="convertDegToPct()">
-        <span class="arrow">&#8594;</span>
-        <div class="result-box" id="pct-output">--</div>
-      </div>
-      <div class="formula-text">Formula: Percentage = (Degree / 360) x 100</div>
-    </div>
-
-    <div style="text-align:center">
-      <button class="back-btn" onclick="goMenu()">&#8592; Back to Menu</button>
-    </div>
-  </div>
-
-  <!-- Alphabet Tool Screen -->
-  <div id="alphabet-screen" class="hidden">
-    <div class="app-header">
-      <h1>Alphabet Tool</h1>
-      <p>Opposite letter &amp; Place value finder</p>
-    </div>
-
-    <div class="tool-card">
-      <h3>Enter a letter or word</h3>
-      <div class="alpha-input-group">
-        <input type="text" id="alpha-input" placeholder="Type here..." oninput="processAlphabet()" maxlength="20">
-      </div>
-      <div class="alpha-result" id="alpha-results"></div>
-      <div class="alpha-rule-text">
-        <strong>Opposite letter rule:</strong> A&#8596;Z, B&#8596;Y, C&#8596;X ... (sum of positions = 27)<br>
-        <strong>Place value:</strong> A=1, B=2, C=3 ... Z=26
-      </div>
-    </div>
-
-    <div class="tool-card">
-      <h3>Full Reference (A-Z)</h3>
-      <table class="frac-table">
-        <thead>
-          <tr><th>Letter</th><th>Position</th><th>Opposite</th><th>Opp. Pos</th></tr>
-        </thead>
-        <tbody id="alpha-ref-table"></tbody>
-      </table>
-    </div>
-
-    <div style="text-align:center">
-      <button class="back-btn" onclick="goMenu()">&#8592; Back to Menu</button>
-    </div>
-  </div>
-
-  <!-- Learning Tables Screen -->
-  <div id="learning-tables-screen" class="hidden">
-    <div class="app-header">
-      <h1>Learning Tables</h1>
-      <p>Multiplication Tables 1 - 50</p>
-    </div>
-    <div class="pagination">
-      <button onclick="prevTablePage()" id="tbl-prev-btn">&larr; Previous</button>
-      <span class="page-info" id="tbl-page-info">Page 1 / 10</span>
-      <button onclick="nextTablePage()" id="tbl-next-btn">Next &rarr;</button>
-    </div>
-    <div class="tables-grid" id="tables-grid"></div>
-    <div class="pagination">
-      <button onclick="prevTablePage()" id="tbl-prev-btn2">&larr; Previous</button>
-      <span class="page-info" id="tbl-page-info2">Page 1 / 10</span>
-      <button onclick="nextTablePage()" id="tbl-next-btn2">Next &rarr;</button>
-    </div>
-    <div style="text-align:center">
-      <button class="back-btn" onclick="goMenu()">&larr; Back to Menu</button>
-    </div>
-  </div>
-
-  <!-- Reference Tables Screen (Squares, Cubes, Consecutive) -->
-  <div id="ref-tables-screen" class="hidden">
-    <div class="app-header">
-      <h1>Reference Tables</h1>
-      <p>Squares, Cubes &amp; Consecutive Products</p>
-    </div>
-    <div class="ref-tabs">
-      <button class="ref-tab active" onclick="switchRefTab('squares')" id="ref-tab-sq">Squares (1-50)</button>
-      <button class="ref-tab" onclick="switchRefTab('cubes')" id="ref-tab-cu">Cubes (1-30)</button>
-      <button class="ref-tab" onclick="switchRefTab('consec')" id="ref-tab-co">Consecutive</button>
-    </div>
-    <div class="tool-card">
-      <div id="ref-sq-section">
-        <h3>Squares (n&sup2;) &mdash; 1 to 50</h3>
-        <table class="frac-table">
-          <thead><tr><th>n</th><th>n&sup2;</th><th>n</th><th>n&sup2;</th></tr></thead>
-          <tbody id="ref-sq-body"></tbody>
-        </table>
-      </div>
-      <div id="ref-cu-section" class="hidden">
-        <h3>Cubes (n&sup3;) &mdash; 1 to 30</h3>
-        <table class="frac-table">
-          <thead><tr><th>n</th><th>n&sup3;</th><th>n</th><th>n&sup3;</th></tr></thead>
-          <tbody id="ref-cu-body"></tbody>
-        </table>
-      </div>
-      <div id="ref-co-section" class="hidden">
-        <h3>Consecutive Products &mdash; n &times; (n+1)</h3>
-        <table class="frac-table">
-          <thead><tr><th>n</th><th>n+1</th><th>Product</th></tr></thead>
-          <tbody id="ref-co-body"></tbody>
-        </table>
-      </div>
-    </div>
-    <div style="text-align:center">
-      <button class="back-btn" onclick="goMenu()">&larr; Back to Menu</button>
-    </div>
-  </div>
-
+  <div id="content"></div>
 </div>
 
 <script>
-// ======================== QUIZ LOGIC ========================
-let mode, rangeFrom, rangeTo;
-let score = 0, total = 0, streak = 0;
+// ══════════════════════════ STATE ══════════════════════════
+var currentTab = 'learn';
+var currentView = 'home';
+var currentTopic = null;
+var quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null };
+var tablePage = 0;
+var TABLES_PER_PAGE = 3;
+var TOTAL_TABLE_PAGES = Math.ceil(30 / TABLES_PER_PAGE);
 
-const limits = { tables: [1, 50], squares: [1, 100], cubes: [1, 50] };
-const labels = { tables: 'Multiplication Tables', squares: 'Squares', cubes: 'Cubes', 'frac-quiz': 'Fraction \u2194 Percentage' };
+// ══════════════════════════ DATA ══════════════════════════
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
 
-function hideAll() {
-  ['menu-screen','range-screen','quiz-screen','fraction-screen','converter-screen','alphabet-screen','learning-tables-screen','ref-tables-screen']
-    .forEach(id => document.getElementById(id).classList.add('hidden'));
-}
-
-function animateScreen(id) {
-  const el = document.getElementById(id);
-  el.classList.remove('hidden');
-  el.classList.remove('screen-animate');
-  void el.offsetWidth;
-  el.classList.add('screen-animate');
-}
-
-function selectMode(m) {
-  mode = m;
-  if (m === 'frac-quiz') {
-    score = 0; total = 0; streak = 0;
-    hideAll();
-    animateScreen('quiz-screen');
-    nextQuestion();
-    return;
+function generateFractions() {
+  var fracs = [];
+  for (var d = 2; d <= 25; d++) {
+    for (var n = 1; n < d; n++) {
+      if (gcd(n, d) === 1) {
+        var pct = (n / d) * 100;
+        var rounded = Math.round(pct * 100) / 100;
+        fracs.push({ n: n, d: d, pct: rounded });
+      }
+    }
   }
-  hideAll();
-  animateScreen('range-screen');
-  document.getElementById('range-title').textContent = labels[m];
-  const [lo, hi] = limits[m];
-  const from = document.getElementById('range-from');
-  const to = document.getElementById('range-to');
-  from.min = lo; from.max = hi; from.value = lo;
-  to.min = lo; to.max = hi; to.value = hi;
+  return fracs;
 }
+var ALL_FRACTIONS = generateFractions();
 
-function goMenu() {
-  hideAll();
-  animateScreen('menu-screen');
-  document.querySelectorAll('#menu-screen .menu-btn').forEach(function(btn, i) {
-    btn.style.animation = 'none';
-    void btn.offsetWidth;
-    btn.style.animation = 'fadeSlideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
-    btn.style.animationDelay = (0.05 + i * 0.05) + 's';
-  });
-  score = 0; total = 0; streak = 0;
-}
-
-function startQuiz() {
-  rangeFrom = parseInt(document.getElementById('range-from').value);
-  rangeTo = parseInt(document.getElementById('range-to').value);
-  if (isNaN(rangeFrom) || isNaN(rangeTo) || rangeFrom > rangeTo) {
-    alert('Please enter a valid range.');
-    return;
-  }
-  const [lo, hi] = limits[mode];
-  rangeFrom = Math.max(lo, rangeFrom);
-  rangeTo = Math.min(hi, rangeTo);
-  score = 0; total = 0; streak = 0;
-  hideAll();
-  animateScreen('quiz-screen');
-  nextQuestion();
-}
-
-function rand(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-const bankFractions = [
-  { num: 1, den: 2, pct: 50 },
-  { num: 1, den: 3, pct: 33.33 },
-  { num: 2, den: 3, pct: 66.67 },
-  { num: 1, den: 4, pct: 25 },
-  { num: 3, den: 4, pct: 75 },
-  { num: 1, den: 5, pct: 20 },
-  { num: 2, den: 5, pct: 40 },
-  { num: 3, den: 5, pct: 60 },
-  { num: 4, den: 5, pct: 80 },
-  { num: 1, den: 6, pct: 16.67 },
-  { num: 5, den: 6, pct: 83.33 },
-  { num: 1, den: 7, pct: 14.28 },
-  { num: 2, den: 7, pct: 28.57 },
-  { num: 3, den: 7, pct: 42.86 },
-  { num: 4, den: 7, pct: 57.14 },
-  { num: 5, den: 7, pct: 71.43 },
-  { num: 6, den: 7, pct: 85.71 },
-  { num: 1, den: 8, pct: 12.5 },
-  { num: 3, den: 8, pct: 37.5 },
-  { num: 5, den: 8, pct: 62.5 },
-  { num: 7, den: 8, pct: 87.5 },
-  { num: 1, den: 9, pct: 11.11 },
-  { num: 2, den: 9, pct: 22.22 },
-  { num: 4, den: 9, pct: 44.44 },
-  { num: 5, den: 9, pct: 55.56 },
-  { num: 7, den: 9, pct: 77.78 },
-  { num: 8, den: 9, pct: 88.89 },
-  { num: 1, den: 10, pct: 10 },
-  { num: 3, den: 10, pct: 30 },
-  { num: 7, den: 10, pct: 70 },
-  { num: 9, den: 10, pct: 90 },
-  { num: 1, den: 11, pct: 9.09 },
-  { num: 1, den: 12, pct: 8.33 },
-  { num: 1, den: 13, pct: 7.69 },
-  { num: 1, den: 14, pct: 7.14 },
-  { num: 1, den: 15, pct: 6.67 },
+var TOPICS = [
+  { id: 'tables', label: 'Tables', sub: '1 - 30', icon: '\u00d7', color: 'cyan' },
+  { id: 'squares', label: 'Squares', sub: '1 - 50', icon: 'n\u00b2', color: 'amber' },
+  { id: 'cubes', label: 'Cubes', sub: '1 - 30', icon: 'n\u00b3', color: 'pink' },
+  { id: 'consec', label: 'Consecutive \u00d7', sub: '11 to 25', icon: 'n\u00b7m', color: 'indigo' },
+  { id: 'fractions', label: 'Fraction \u2194 %', sub: '1/2 to 1/25', icon: '%', color: 'green' },
+  { id: 'alphabet', label: 'Alphabet Index', sub: 'A-Z + Reverse', icon: 'AZ', color: 'violet' },
+  { id: 'degree', label: 'Degree \u2194 %', sub: 'Converter', icon: '\u00b0', color: 'sky' }
 ];
 
-function generateQuestion() {
-  if (mode === 'frac-quiz') {
-    const f = bankFractions[rand(0, bankFractions.length - 1)];
-    if (Math.random() < 0.5) {
-      return { text: f.num + '/' + f.den + ' = ? %', answer: f.pct, isFrac: true, frac: f };
-    } else {
-      return { text: f.pct + '% = ?', answer: f.pct, isFrac: true, frac: f, showAsFrac: true };
-    }
-  }
-  const n = rand(rangeFrom, rangeTo);
-  if (mode === 'tables') {
-    const m = rand(1, 10);
-    return { text: n + ' \u00d7 ' + m + ' = ?', answer: n * m, base: n };
-  } else if (mode === 'squares') {
-    return { text: n + '\u00b2 = ?', answer: n * n, base: n };
-  } else {
-    return { text: n + '\u00b3 = ?', answer: n * n * n, base: n };
-  }
+// ══════════════════════════ NAVIGATION ══════════════════════════
+document.getElementById('tab-learn').addEventListener('click', function() { switchTab('learn'); });
+document.getElementById('tab-practice').addEventListener('click', function() { switchTab('practice'); });
+
+function switchTab(tab) {
+  currentTab = tab;
+  currentView = 'home';
+  currentTopic = null;
+  tablePage = 0;
+  document.getElementById('tab-learn').classList.toggle('active', tab === 'learn');
+  document.getElementById('tab-practice').classList.toggle('active', tab === 'practice');
+  render();
 }
 
-function generateFracOptions(q) {
-  if (q.showAsFrac) {
-    var correctLabel = q.frac.num + '/' + q.frac.den;
-    var opts = new Set([correctLabel]);
-    while (opts.size < 4) {
-      var rf = bankFractions[rand(0, bankFractions.length - 1)];
-      var label = rf.num + '/' + rf.den;
-      if (label !== correctLabel) opts.add(label);
-    }
-    return { options: shuffle([...opts]), correctLabel: correctLabel };
-  } else {
-    var correctLabel = q.frac.pct + '%';
-    var opts = new Set([correctLabel]);
-    while (opts.size < 4) {
-      var rf = bankFractions[rand(0, bankFractions.length - 1)];
-      var label = rf.pct + '%';
-      if (label !== correctLabel) opts.add(label);
-    }
-    return { options: shuffle([...opts]), correctLabel: correctLabel };
-  }
+function showDetail(topicId) {
+  currentView = 'detail';
+  currentTopic = topicId;
+  tablePage = 0;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function generateOptions(answer) {
-  var opts = new Set([answer]);
-  while (opts.size < 4) {
-    var offset = rand(1, Math.max(10, Math.floor(Math.abs(answer) * 0.15)));
-    var wrong = answer + (Math.random() < 0.5 ? offset : -offset);
-    if (wrong > 0 && wrong !== answer) opts.add(wrong);
-  }
-  return shuffle([...opts]);
+function startQuiz(topicId) {
+  currentView = 'quiz';
+  currentTopic = topicId;
+  quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null };
+  render();
+  generateNewQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function shuffle(arr) {
-  for (var i = arr.length - 1; i > 0; i--) {
-    var j = rand(0, i);
-    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-  }
-  return arr;
+function goHome() {
+  currentView = 'home';
+  currentTopic = null;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function nextQuestion() {
-  updateScore();
-  var q = generateQuestion();
-  document.getElementById('question').textContent = q.text;
-  var optDiv = document.getElementById('options');
-  optDiv.textContent = '';
+// ══════════════════════════ RENDER ══════════════════════════
+function getContent() { return document.getElementById('content'); }
 
-  if (q.isFrac) {
-    var result = generateFracOptions(q);
-    result.options.forEach(function(label, i) {
-      var btn = document.createElement('button');
-      btn.className = 'opt-btn';
-      btn.textContent = label;
-      btn.style.opacity = '0';
-      btn.style.animation = 'fadeSlideUp 0.3s ease forwards';
-      btn.style.animationDelay = (i * 0.06) + 's';
-      btn.onclick = function() { handleFracAnswer(btn, label, result.correctLabel); };
-      optDiv.appendChild(btn);
-    });
-  } else {
-    var options = generateOptions(q.answer);
-    options.forEach(function(val, i) {
-      var btn = document.createElement('button');
-      btn.className = 'opt-btn';
-      btn.textContent = val.toLocaleString();
-      btn.style.opacity = '0';
-      btn.style.animation = 'fadeSlideUp 0.3s ease forwards';
-      btn.style.animationDelay = (i * 0.06) + 's';
-      btn.onclick = function() { handleAnswer(btn, val, q.answer); };
-      optDiv.appendChild(btn);
-    });
-  }
+function render() {
+  if (currentView === 'home') renderHome();
+  else if (currentView === 'detail') renderDetail();
+  else if (currentView === 'quiz') renderQuizScreen();
 }
 
-function handleFracAnswer(btn, selected, correct) {
-  var buttons = document.querySelectorAll('.opt-btn');
-  buttons.forEach(function(b) {
-    b.disabled = true;
-    if (b.textContent === correct) b.classList.add('correct');
-  });
-  total++;
-  if (selected === correct) {
-    score++; streak++;
-  } else {
-    btn.classList.add('wrong'); streak = 0;
-  }
-  updateScore();
-  setTimeout(nextQuestion, 900);
-}
+function renderHome() {
+  var el = getContent();
+  var isLearn = currentTab === 'learn';
+  var label = isLearn ? 'Reference Material' : 'Test Yourself';
 
-function handleAnswer(btn, selected, correct) {
-  var buttons = document.querySelectorAll('.opt-btn');
-  buttons.forEach(function(b) {
-    b.disabled = true;
-    var val = parseInt(b.textContent.replace(/,/g, ''));
-    if (val === correct) b.classList.add('correct');
-  });
-  total++;
-  if (selected === correct) {
-    score++; streak++;
-  } else {
-    btn.classList.add('wrong'); streak = 0;
-  }
-  updateScore();
-  setTimeout(nextQuestion, 800);
-}
+  // Build DOM safely
+  el.textContent = '';
 
-function updateScore() {
-  document.getElementById('score').textContent = score;
-  document.getElementById('total').textContent = total;
-  document.getElementById('streak').textContent = streak;
-  var streakEl = document.getElementById('streak-container');
-  if (streak >= 3) {
-    streakEl.classList.add('active');
-  } else {
-    streakEl.classList.remove('active');
-  }
-}
+  var sectionLabel = document.createElement('div');
+  sectionLabel.className = 'section-label';
+  sectionLabel.textContent = label;
+  el.appendChild(sectionLabel);
 
-// ======================== FRACTION TABLE ========================
-function showFractionTable() {
-  hideAll();
-  animateScreen('fraction-screen');
-  var tbody = document.getElementById('frac-table-body');
-  tbody.textContent = '';
-  bankFractions.forEach(function(f) {
-    var tr = document.createElement('tr');
-    if ([2,3,4,5,6,7,8].indexOf(f.den) !== -1 && f.num === 1) tr.className = 'highlight';
-    var tdFrac = document.createElement('td');
-    tdFrac.textContent = f.num + '/' + f.den;
-    var tdPct = document.createElement('td');
-    tdPct.textContent = f.pct + '%';
-    var tdDec = document.createElement('td');
-    tdDec.textContent = (f.pct / 100).toFixed(4);
-    tr.appendChild(tdFrac);
-    tr.appendChild(tdPct);
-    tr.appendChild(tdDec);
-    tbody.appendChild(tr);
-  });
-}
+  var grid = document.createElement('div');
+  grid.className = 'topics-grid';
 
-// ======================== CONVERTER ========================
-function showConverter() {
-  hideAll();
-  animateScreen('converter-screen');
-  document.getElementById('pct-input').value = '';
-  document.getElementById('deg-input').value = '';
-  document.getElementById('deg-output').textContent = '--';
-  document.getElementById('pct-output').textContent = '--';
-}
-
-function convertPctToDeg() {
-  var val = parseFloat(document.getElementById('pct-input').value);
-  var out = document.getElementById('deg-output');
-  if (isNaN(val)) { out.textContent = '--'; return; }
-  var deg = (val / 100) * 360;
-  out.textContent = parseFloat(deg.toFixed(2)) + '\u00b0';
-}
-
-function convertDegToPct() {
-  var val = parseFloat(document.getElementById('deg-input').value);
-  var out = document.getElementById('pct-output');
-  if (isNaN(val)) { out.textContent = '--'; return; }
-  var pct = (val / 360) * 100;
-  out.textContent = parseFloat(pct.toFixed(2)) + '%';
-}
-
-// ======================== ALPHABET TOOL ========================
-function showAlphabetTool() {
-  hideAll();
-  animateScreen('alphabet-screen');
-  document.getElementById('alpha-input').value = '';
-  document.getElementById('alpha-results').textContent = '';
-  buildAlphaRefTable();
-}
-
-function getPosition(ch) {
-  return ch.toUpperCase().charCodeAt(0) - 64;
-}
-
-function getOpposite(ch) {
-  var pos = getPosition(ch);
-  return String.fromCharCode(64 + (27 - pos));
-}
-
-function processAlphabet() {
-  var input = document.getElementById('alpha-input').value.toUpperCase().replace(/[^A-Z]/g, '');
-  var container = document.getElementById('alpha-results');
-  container.textContent = '';
-
-  if (!input) return;
-
-  Array.prototype.forEach.call(input, function(ch, i) {
-    var pos = getPosition(ch);
-    var opp = getOpposite(ch);
-    var oppPos = getPosition(opp);
-
+  TOPICS.forEach(function(t, i) {
     var card = document.createElement('div');
-    card.className = 'alpha-result-card';
-    card.style.opacity = '0';
-    card.style.animation = 'fadeSlideUp 0.3s ease forwards';
-    card.style.animationDelay = (i * 0.05) + 's';
+    card.className = 'topic-card anim-up stagger-' + (i + 1);
+    card.setAttribute('data-color', t.color);
 
-    var letterEl = document.createElement('div');
-    letterEl.style.cssText = "font-family:'DM Serif Display',serif; font-size:2rem; color:var(--text-primary); margin-bottom:8px;";
-    letterEl.textContent = ch;
+    if (isLearn) {
+      card.addEventListener('click', (function(id) { return function() { showDetail(id); }; })(t.id));
+    } else {
+      card.addEventListener('click', (function(id) { return function() { startQuiz(id); }; })(t.id));
+    }
 
-    var row = document.createElement('div');
-    row.style.cssText = 'display:flex; justify-content:space-around; gap:8px;';
+    var icon = document.createElement('div');
+    icon.className = 'tc-icon';
+    icon.textContent = t.icon;
 
-    var posBlock = document.createElement('div');
-    var posLabel = document.createElement('div');
-    posLabel.className = 'card-label';
-    posLabel.textContent = 'Position';
-    var posVal = document.createElement('div');
-    posVal.style.cssText = 'font-size:1.3rem; font-weight:800; color:var(--accent-sky);';
-    posVal.textContent = pos;
-    posBlock.appendChild(posLabel);
-    posBlock.appendChild(posVal);
+    var lbl = document.createElement('div');
+    lbl.className = 'tc-label';
+    lbl.textContent = t.label;
 
-    var oppBlock = document.createElement('div');
-    var oppLabel = document.createElement('div');
-    oppLabel.className = 'card-label';
-    oppLabel.textContent = 'Opposite';
-    var oppVal = document.createElement('div');
-    oppVal.style.cssText = 'font-size:1.3rem; font-weight:800; color:var(--accent-rose);';
-    oppVal.textContent = opp + ' (' + oppPos + ')';
-    oppBlock.appendChild(oppLabel);
-    oppBlock.appendChild(oppVal);
+    var sub = document.createElement('div');
+    sub.className = 'tc-sub';
+    sub.textContent = t.sub;
 
-    row.appendChild(posBlock);
-    row.appendChild(oppBlock);
-    card.appendChild(letterEl);
-    card.appendChild(row);
-    container.appendChild(card);
+    card.appendChild(icon);
+    card.appendChild(lbl);
+    card.appendChild(sub);
+    grid.appendChild(card);
   });
+
+  el.appendChild(grid);
 }
 
-// ======================== LEARNING TABLES ========================
-var tableCurrentPage = 0;
-var tablesPerPage = 5;
-var tableTotalPages = Math.ceil(50 / tablesPerPage);
+// ══════════════════════════ LEARN DETAIL ══════════════════════════
+function renderDetail() {
+  var el = getContent();
+  el.textContent = '';
 
-function showLearningTables() {
-  hideAll();
-  tableCurrentPage = 0;
-  animateScreen('learning-tables-screen');
-  renderTablePage();
+  var topic = TOPICS.filter(function(t) { return t.id === currentTopic; })[0];
+
+  // Header
+  var header = document.createElement('div');
+  header.className = 'detail-header';
+  var backBtn = document.createElement('button');
+  backBtn.className = 'back-btn';
+  backBtn.textContent = '\u2190 Back';
+  backBtn.addEventListener('click', goHome);
+  var title = document.createElement('h2');
+  title.textContent = topic ? topic.label : '';
+  header.appendChild(backBtn);
+  header.appendChild(title);
+  el.appendChild(header);
+
+  switch (currentTopic) {
+    case 'tables': buildTablesDetail(el); break;
+    case 'squares': buildSquaresDetail(el); break;
+    case 'cubes': buildCubesDetail(el); break;
+    case 'consec': buildConsecDetail(el); break;
+    case 'fractions': buildFractionsDetail(el); break;
+    case 'alphabet': buildAlphabetDetail(el); break;
+    case 'degree': buildDegreeDetail(el); break;
+  }
 }
 
-function renderTablePage() {
-  var grid = document.getElementById('tables-grid');
-  grid.textContent = '';
-  var start = tableCurrentPage * tablesPerPage + 1;
-  var end = Math.min(start + tablesPerPage - 1, 50);
+function createPagination(parent) {
+  var pg = document.createElement('div');
+  pg.className = 'pagination';
+
+  var prevBtn = document.createElement('button');
+  prevBtn.textContent = '\u2190 Prev';
+  prevBtn.disabled = (tablePage === 0);
+  prevBtn.addEventListener('click', function() {
+    if (tablePage > 0) { tablePage--; renderDetail(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  });
+
+  var info = document.createElement('span');
+  info.className = 'pg-info';
+  info.textContent = 'Page ' + (tablePage + 1) + ' / ' + TOTAL_TABLE_PAGES;
+
+  var nextBtn = document.createElement('button');
+  nextBtn.textContent = 'Next \u2192';
+  nextBtn.disabled = (tablePage >= TOTAL_TABLE_PAGES - 1);
+  nextBtn.addEventListener('click', function() {
+    if (tablePage < TOTAL_TABLE_PAGES - 1) { tablePage++; renderDetail(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  });
+
+  pg.appendChild(prevBtn);
+  pg.appendChild(info);
+  pg.appendChild(nextBtn);
+  parent.appendChild(pg);
+}
+
+function buildTablesDetail(el) {
+  createPagination(el);
+  var start = tablePage * TABLES_PER_PAGE + 1;
+  var end = Math.min(start + TABLES_PER_PAGE - 1, 30);
 
   for (var n = start; n <= end; n++) {
-    var block = document.createElement('div');
-    block.className = 'table-block tool-card';
-    block.style.opacity = '0';
-    block.style.animation = 'fadeSlideUp 0.4s ease forwards';
-    block.style.animationDelay = ((n - start) * 0.08) + 's';
-
-    var h4 = document.createElement('h4');
-    h4.textContent = 'Table of ' + n;
-    block.appendChild(h4);
+    var card = document.createElement('div');
+    card.className = 'card anim-up stagger-' + (n - start + 1);
+    var h3 = document.createElement('h3');
+    h3.textContent = 'Table of ' + n;
+    card.appendChild(h3);
 
     var table = document.createElement('table');
-    table.className = 'frac-table';
+    table.className = 'data-table';
     var thead = document.createElement('thead');
     var headRow = document.createElement('tr');
-    ['Multiplication', 'Result'].forEach(function(t) {
+    ['Multiplication', 'Result'].forEach(function(txt) {
       var th = document.createElement('th');
-      th.textContent = t;
+      th.textContent = txt;
       headRow.appendChild(th);
     });
     thead.appendChild(headRow);
@@ -1406,181 +769,588 @@ function renderTablePage() {
     for (var m = 1; m <= 10; m++) {
       var tr = document.createElement('tr');
       var td1 = document.createElement('td');
+      td1.className = 'col-key';
       td1.textContent = n + ' \u00d7 ' + m;
       var td2 = document.createElement('td');
-      td2.textContent = (n * m).toLocaleString();
+      td2.className = 'col-val';
+      td2.textContent = n * m;
       tr.appendChild(td1);
       tr.appendChild(td2);
       tbody.appendChild(tr);
     }
     table.appendChild(tbody);
-    block.appendChild(table);
-    grid.appendChild(block);
+    card.appendChild(table);
+    el.appendChild(card);
   }
-
-  updateTablePagination();
+  createPagination(el);
 }
 
-function updateTablePagination() {
-  var info = 'Page ' + (tableCurrentPage + 1) + ' / ' + tableTotalPages;
-  document.getElementById('tbl-page-info').textContent = info;
-  document.getElementById('tbl-page-info2').textContent = info;
-  document.getElementById('tbl-prev-btn').disabled = (tableCurrentPage === 0);
-  document.getElementById('tbl-prev-btn2').disabled = (tableCurrentPage === 0);
-  document.getElementById('tbl-next-btn').disabled = (tableCurrentPage === tableTotalPages - 1);
-  document.getElementById('tbl-next-btn2').disabled = (tableCurrentPage === tableTotalPages - 1);
-}
+function buildSquaresDetail(el) {
+  var card = document.createElement('div');
+  card.className = 'card';
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Squares (n\u00b2) \u2014 1 to 50';
+  card.appendChild(h3);
 
-function nextTablePage() {
-  if (tableCurrentPage < tableTotalPages - 1) {
-    tableCurrentPage++;
-    renderTablePage();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
+  var table = document.createElement('table');
+  table.className = 'data-table';
+  var thead = document.createElement('thead');
+  var headRow = document.createElement('tr');
+  ['n', 'n\u00b2', 'n', 'n\u00b2'].forEach(function(txt) {
+    var th = document.createElement('th'); th.textContent = txt; headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
 
-function prevTablePage() {
-  if (tableCurrentPage > 0) {
-    tableCurrentPage--;
-    renderTablePage();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
-
-// ======================== REFERENCE TABLES ========================
-function showRefTables() {
-  hideAll();
-  animateScreen('ref-tables-screen');
-  buildSquaresTable();
-  buildCubesTable();
-  buildConsecTable();
-  switchRefTab('squares');
-}
-
-function switchRefTab(tab) {
-  document.getElementById('ref-sq-section').classList.add('hidden');
-  document.getElementById('ref-cu-section').classList.add('hidden');
-  document.getElementById('ref-co-section').classList.add('hidden');
-  document.getElementById('ref-tab-sq').classList.remove('active');
-  document.getElementById('ref-tab-cu').classList.remove('active');
-  document.getElementById('ref-tab-co').classList.remove('active');
-
-  if (tab === 'squares') {
-    document.getElementById('ref-sq-section').classList.remove('hidden');
-    document.getElementById('ref-tab-sq').classList.add('active');
-  } else if (tab === 'cubes') {
-    document.getElementById('ref-cu-section').classList.remove('hidden');
-    document.getElementById('ref-tab-cu').classList.add('active');
-  } else {
-    document.getElementById('ref-co-section').classList.remove('hidden');
-    document.getElementById('ref-tab-co').classList.add('active');
-  }
-}
-
-function buildSquaresTable() {
-  var tbody = document.getElementById('ref-sq-body');
-  tbody.textContent = '';
+  var tbody = document.createElement('tbody');
   for (var i = 1; i <= 25; i++) {
     var j = i + 25;
     var tr = document.createElement('tr');
-    var td1 = document.createElement('td');
-    td1.textContent = i;
-    td1.style.cssText = 'font-weight:700; color:var(--text-primary);';
-    var td2 = document.createElement('td');
-    td2.textContent = (i * i).toLocaleString();
-    td2.style.color = 'var(--accent-gold)';
-    var td3 = document.createElement('td');
-    td3.textContent = j;
-    td3.style.cssText = 'font-weight:700; color:var(--text-primary);';
-    var td4 = document.createElement('td');
-    td4.textContent = (j * j).toLocaleString();
-    td4.style.color = 'var(--accent-gold)';
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tr.appendChild(td3);
-    tr.appendChild(td4);
+    var td1 = document.createElement('td'); td1.className = 'col-key'; td1.textContent = i;
+    var td2 = document.createElement('td'); td2.className = 'col-val'; td2.textContent = i * i;
+    var td3 = document.createElement('td'); td3.className = 'col-key'; td3.textContent = j;
+    var td4 = document.createElement('td'); td4.className = 'col-val'; td4.textContent = j * j;
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
     tbody.appendChild(tr);
   }
+  table.appendChild(tbody);
+  card.appendChild(table);
+  el.appendChild(card);
 }
 
-function buildCubesTable() {
-  var tbody = document.getElementById('ref-cu-body');
-  tbody.textContent = '';
+function buildCubesDetail(el) {
+  var card = document.createElement('div');
+  card.className = 'card';
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Cubes (n\u00b3) \u2014 1 to 30';
+  card.appendChild(h3);
+
+  var table = document.createElement('table');
+  table.className = 'data-table';
+  var thead = document.createElement('thead');
+  var headRow = document.createElement('tr');
+  ['n', 'n\u00b3', 'n', 'n\u00b3'].forEach(function(txt) {
+    var th = document.createElement('th'); th.textContent = txt; headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
   for (var i = 1; i <= 15; i++) {
     var j = i + 15;
     var tr = document.createElement('tr');
-    var td1 = document.createElement('td');
-    td1.textContent = i;
-    td1.style.cssText = 'font-weight:700; color:var(--text-primary);';
-    var td2 = document.createElement('td');
-    td2.textContent = (i * i * i).toLocaleString();
-    td2.style.color = 'var(--accent-amber)';
-    var td3 = document.createElement('td');
-    td3.textContent = j;
-    td3.style.cssText = 'font-weight:700; color:var(--text-primary);';
-    var td4 = document.createElement('td');
-    td4.textContent = (j * j * j).toLocaleString();
-    td4.style.color = 'var(--accent-amber)';
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tr.appendChild(td3);
-    tr.appendChild(td4);
+    var td1 = document.createElement('td'); td1.className = 'col-key'; td1.textContent = i;
+    var td2 = document.createElement('td'); td2.className = 'col-val-2'; td2.textContent = (i*i*i).toLocaleString();
+    var td3 = document.createElement('td'); td3.className = 'col-key'; td3.textContent = j;
+    var td4 = document.createElement('td'); td4.className = 'col-val-2'; td4.textContent = (j*j*j).toLocaleString();
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
     tbody.appendChild(tr);
   }
+  table.appendChild(tbody);
+  card.appendChild(table);
+  el.appendChild(card);
 }
 
-function buildConsecTable() {
-  var tbody = document.getElementById('ref-co-body');
-  tbody.textContent = '';
-  for (var n = 1; n <= 30; n++) {
+function buildConsecDetail(el) {
+  var card = document.createElement('div');
+  card.className = 'card';
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Consecutive Products \u2014 n \u00d7 (n+1)';
+  card.appendChild(h3);
+
+  var table = document.createElement('table');
+  table.className = 'data-table';
+  var thead = document.createElement('thead');
+  var headRow = document.createElement('tr');
+  ['n', 'n+1', 'Product'].forEach(function(txt) {
+    var th = document.createElement('th'); th.textContent = txt; headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
+  for (var n = 11; n <= 25; n++) {
     var tr = document.createElement('tr');
-    var td1 = document.createElement('td');
-    td1.textContent = n;
-    td1.style.cssText = 'font-weight:700; color:var(--text-primary);';
-    var td2 = document.createElement('td');
-    td2.textContent = n + 1;
-    td2.style.color = 'var(--text-secondary)';
-    var td3 = document.createElement('td');
-    td3.textContent = (n * (n + 1)).toLocaleString();
-    td3.style.cssText = 'font-weight:700; color:var(--accent-teal);';
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tr.appendChild(td3);
+    var td1 = document.createElement('td'); td1.className = 'col-key'; td1.textContent = n;
+    var td2 = document.createElement('td'); td2.textContent = n + 1;
+    var td3 = document.createElement('td'); td3.className = 'col-val'; td3.textContent = n * (n + 1);
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
     tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  card.appendChild(table);
+  el.appendChild(card);
+}
+
+function buildFractionsDetail(el) {
+  for (var d = 2; d <= 25; d++) {
+    var group = ALL_FRACTIONS.filter(function(f) { return f.d === d; });
+    if (group.length === 0) continue;
+
+    var card = document.createElement('div');
+    card.className = 'card';
+    var h3 = document.createElement('h3');
+    h3.textContent = 'Denominator ' + d;
+    card.appendChild(h3);
+
+    var table = document.createElement('table');
+    table.className = 'data-table';
+    var thead = document.createElement('thead');
+    var headRow = document.createElement('tr');
+    ['Fraction', 'Percentage', 'Decimal'].forEach(function(txt) {
+      var th = document.createElement('th'); th.textContent = txt; headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    group.forEach(function(f) {
+      var tr = document.createElement('tr');
+      var td1 = document.createElement('td'); td1.className = 'col-key'; td1.textContent = f.n + '/' + f.d;
+      var td2 = document.createElement('td'); td2.className = 'col-val';
+      td2.textContent = (f.pct % 1 === 0 ? f.pct + '%' : f.pct.toFixed(2) + '%');
+      var td3 = document.createElement('td'); td3.textContent = (f.pct / 100).toFixed(4);
+      tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    card.appendChild(table);
+    el.appendChild(card);
   }
 }
 
-function buildAlphaRefTable() {
-  var tbody = document.getElementById('alpha-ref-table');
-  tbody.textContent = '';
+function buildAlphabetDetail(el) {
+  var card = document.createElement('div');
+  card.className = 'card';
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Alphabet Position & Reverse';
+  card.appendChild(h3);
+
+  var table = document.createElement('table');
+  table.className = 'data-table';
+  var thead = document.createElement('thead');
+  var headRow = document.createElement('tr');
+  ['Letter', 'Position', 'Reverse', 'Rev. Pos'].forEach(function(txt) {
+    var th = document.createElement('th'); th.textContent = txt; headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
   for (var i = 1; i <= 26; i++) {
     var ch = String.fromCharCode(64 + i);
-    var opp = String.fromCharCode(64 + (27 - i));
+    var rev = String.fromCharCode(64 + (27 - i));
     var tr = document.createElement('tr');
-
-    var td1 = document.createElement('td');
-    td1.style.cssText = 'font-weight:700; color:var(--text-primary);';
-    td1.textContent = ch;
-
-    var td2 = document.createElement('td');
-    td2.style.color = 'var(--accent-sky)';
-    td2.textContent = i;
-
-    var td3 = document.createElement('td');
-    td3.style.cssText = 'font-weight:700; color:var(--accent-rose);';
-    td3.textContent = opp;
-
-    var td4 = document.createElement('td');
-    td4.style.color = 'var(--text-muted)';
-    td4.textContent = 27 - i;
-
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tr.appendChild(td3);
-    tr.appendChild(td4);
+    var td1 = document.createElement('td'); td1.className = 'col-key'; td1.textContent = ch;
+    var td2 = document.createElement('td'); td2.className = 'col-val'; td2.textContent = i;
+    var td3 = document.createElement('td'); td3.className = 'col-val-3'; td3.textContent = rev;
+    var td4 = document.createElement('td'); td4.textContent = 27 - i;
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
     tbody.appendChild(tr);
   }
+  table.appendChild(tbody);
+  card.appendChild(table);
+
+  var ruleBox = document.createElement('div');
+  ruleBox.style.cssText = 'margin-top:14px;padding:12px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid rgba(255,255,255,0.06);font-size:0.75rem;color:#505168;line-height:1.7';
+  var ruleStrong = document.createElement('strong');
+  ruleStrong.style.color = '#8e8fa0';
+  ruleStrong.textContent = 'Rule: ';
+  ruleBox.appendChild(ruleStrong);
+  ruleBox.appendChild(document.createTextNode('A\u2194Z, B\u2194Y, C\u2194X ... (sum of positions = 27)'));
+  card.appendChild(ruleBox);
+  el.appendChild(card);
 }
+
+function buildDegreeDetail(el) {
+  // Common values table
+  var card1 = document.createElement('div');
+  card1.className = 'card';
+  var h3a = document.createElement('h3');
+  h3a.textContent = 'Common Degree \u2194 Percentage';
+  card1.appendChild(h3a);
+
+  var table = document.createElement('table');
+  table.className = 'data-table';
+  var thead = document.createElement('thead');
+  var headRow = document.createElement('tr');
+  ['Percentage', 'Degree'].forEach(function(txt) {
+    var th = document.createElement('th'); th.textContent = txt; headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
+  var common = [
+    [10,36],[12.5,45],[16.67,60],[20,72],[25,90],[30,108],
+    [33.33,120],[40,144],[50,180],[60,216],[66.67,240],
+    [70,252],[75,270],[80,288],[90,324],[100,360]
+  ];
+  common.forEach(function(pair) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td'); td1.className = 'col-key';
+    td1.textContent = (pair[0] % 1 === 0 ? pair[0] + '%' : pair[0].toFixed(2) + '%');
+    var td2 = document.createElement('td'); td2.className = 'col-val';
+    td2.textContent = pair[1] + '\u00b0';
+    tr.appendChild(td1); tr.appendChild(td2);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  card1.appendChild(table);
+  el.appendChild(card1);
+
+  // Pct -> Deg converter
+  var card2 = document.createElement('div');
+  card2.className = 'card';
+  var h3b = document.createElement('h3');
+  h3b.textContent = 'Percentage \u2192 Degree';
+  card2.appendChild(h3b);
+  var lbl1 = document.createElement('div');
+  lbl1.className = 'conv-label';
+  lbl1.textContent = 'Enter percentage';
+  card2.appendChild(lbl1);
+  var row1 = document.createElement('div');
+  row1.className = 'converter-row';
+  var pctIn = document.createElement('input');
+  pctIn.type = 'number';
+  pctIn.placeholder = 'e.g. 25';
+  var arrow1 = document.createElement('span');
+  arrow1.className = 'arrow';
+  arrow1.textContent = '\u2192';
+  var degOut = document.createElement('div');
+  degOut.className = 'result-box';
+  degOut.textContent = '--';
+  pctIn.addEventListener('input', function() {
+    var val = parseFloat(pctIn.value);
+    degOut.textContent = isNaN(val) ? '--' : (parseFloat(((val/100)*360).toFixed(2)) + '\u00b0');
+  });
+  row1.appendChild(pctIn); row1.appendChild(arrow1); row1.appendChild(degOut);
+  card2.appendChild(row1);
+  var f1 = document.createElement('div');
+  f1.className = 'conv-formula';
+  f1.textContent = 'Degree = (Percentage / 100) \u00d7 360';
+  card2.appendChild(f1);
+  el.appendChild(card2);
+
+  // Deg -> Pct converter
+  var card3 = document.createElement('div');
+  card3.className = 'card';
+  var h3c = document.createElement('h3');
+  h3c.textContent = 'Degree \u2192 Percentage';
+  card3.appendChild(h3c);
+  var lbl2 = document.createElement('div');
+  lbl2.className = 'conv-label';
+  lbl2.textContent = 'Enter degree';
+  card3.appendChild(lbl2);
+  var row2 = document.createElement('div');
+  row2.className = 'converter-row';
+  var degIn = document.createElement('input');
+  degIn.type = 'number';
+  degIn.placeholder = 'e.g. 90';
+  var arrow2 = document.createElement('span');
+  arrow2.className = 'arrow';
+  arrow2.textContent = '\u2192';
+  var pctOut = document.createElement('div');
+  pctOut.className = 'result-box';
+  pctOut.textContent = '--';
+  degIn.addEventListener('input', function() {
+    var val = parseFloat(degIn.value);
+    pctOut.textContent = isNaN(val) ? '--' : (parseFloat(((val/360)*100).toFixed(2)) + '%');
+  });
+  row2.appendChild(degIn); row2.appendChild(arrow2); row2.appendChild(pctOut);
+  card3.appendChild(row2);
+  var f2 = document.createElement('div');
+  f2.className = 'conv-formula';
+  f2.textContent = 'Percentage = (Degree / 360) \u00d7 100';
+  card3.appendChild(f2);
+  el.appendChild(card3);
+}
+
+// ══════════════════════════ QUIZ ══════════════════════════
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateNewQuestion() {
+  quiz.answered = false;
+  var q;
+
+  switch (currentTopic) {
+    case 'tables':
+      var tn = rand(1, 30), tm = rand(2, 10);
+      q = { text: tn + ' \u00d7 ' + tm + ' = ?', answer: String(tn * tm), hint: 'Type the number' };
+      break;
+    case 'squares':
+      var sn = rand(1, 50);
+      q = { text: sn + '\u00b2 = ?', answer: String(sn * sn), hint: 'Type the square' };
+      break;
+    case 'cubes':
+      var cn = rand(1, 30);
+      q = { text: cn + '\u00b3 = ?', answer: String(cn * cn * cn), hint: 'Type the cube' };
+      break;
+    case 'consec':
+      var xn = rand(11, 24);
+      q = { text: xn + ' \u00d7 ' + (xn + 1) + ' = ?', answer: String(xn * (xn + 1)), hint: 'Type the product' };
+      break;
+    case 'fractions':
+      var f = ALL_FRACTIONS[rand(0, ALL_FRACTIONS.length - 1)];
+      if (Math.random() < 0.5) {
+        var pctStr = f.pct % 1 === 0 ? String(f.pct) : f.pct.toFixed(2);
+        q = { text: f.n + '/' + f.d + ' = ? %', answer: pctStr, hint: 'Type percentage (e.g. 12.5)' };
+      } else {
+        var pctLabel = f.pct % 1 === 0 ? f.pct + '%' : f.pct.toFixed(2) + '%';
+        q = { text: pctLabel + ' = ?', answer: f.n + '/' + f.d, hint: 'Type fraction (e.g. 1/8)' };
+      }
+      break;
+    case 'alphabet':
+      var ai = rand(1, 26);
+      var ach = String.fromCharCode(64 + ai);
+      var arev = String.fromCharCode(64 + (27 - ai));
+      var atype = rand(0, 2);
+      if (atype === 0) {
+        q = { text: 'Position of  ' + ach + '  ?', answer: String(ai), hint: 'Type the number (1-26)' };
+      } else if (atype === 1) {
+        q = { text: 'Reverse of  ' + ach + '  ?', answer: arev, hint: 'Type the letter' };
+      } else {
+        q = { text: 'Letter at position  ' + ai + '  ?', answer: ach, hint: 'Type the letter' };
+      }
+      break;
+    case 'degree':
+      var degs = [36,45,60,72,90,108,120,144,180,216,240,252,270,288,324,360];
+      var pcts = [10,12.5,16.67,20,25,30,33.33,40,50,60,66.67,70,75,80,90,100];
+      if (Math.random() < 0.5) {
+        var di = rand(0, pcts.length - 1);
+        var dp = pcts[di];
+        var dd = degs[di];
+        q = { text: (dp % 1 === 0 ? dp + '%' : dp.toFixed(2) + '%') + ' = ? \u00b0', answer: String(dd), hint: 'Type degrees' };
+      } else {
+        var di2 = rand(0, degs.length - 1);
+        var dd2 = degs[di2];
+        var dp2 = pcts[di2];
+        var dpStr = dp2 % 1 === 0 ? String(dp2) : dp2.toFixed(2);
+        q = { text: dd2 + '\u00b0 = ? %', answer: dpStr, hint: 'Type percentage' };
+      }
+      break;
+  }
+
+  quiz.currentQ = q;
+  updateQuizDisplay();
+}
+
+function renderQuizScreen() {
+  var el = getContent();
+  el.textContent = '';
+
+  var topic = TOPICS.filter(function(t) { return t.id === currentTopic; })[0];
+
+  // Header
+  var header = document.createElement('div');
+  header.className = 'detail-header';
+  var backBtn = document.createElement('button');
+  backBtn.className = 'back-btn';
+  backBtn.textContent = '\u2190 Back';
+  backBtn.addEventListener('click', goHome);
+  var title = document.createElement('h2');
+  title.textContent = (topic ? topic.label : '') + ' Quiz';
+  header.appendChild(backBtn);
+  header.appendChild(title);
+  el.appendChild(header);
+
+  // Score bar
+  var bar = document.createElement('div');
+  bar.className = 'quiz-bar';
+  bar.id = 'quiz-bar';
+
+  var statScore = document.createElement('span');
+  statScore.className = 'qb-stat';
+  statScore.appendChild(document.createTextNode('Score: '));
+  var scoreNum = document.createElement('strong');
+  scoreNum.id = 'q-score';
+  scoreNum.textContent = '0';
+  statScore.appendChild(scoreNum);
+  statScore.appendChild(document.createTextNode(' / '));
+  var totalNum = document.createElement('strong');
+  totalNum.id = 'q-total';
+  totalNum.textContent = '0';
+  statScore.appendChild(totalNum);
+
+  var statStreak = document.createElement('span');
+  statStreak.className = 'qb-stat qb-streak';
+  statStreak.id = 'q-streak-wrap';
+  statStreak.appendChild(document.createTextNode('Streak: '));
+  var streakNum = document.createElement('strong');
+  streakNum.id = 'q-streak';
+  streakNum.textContent = '0';
+  statStreak.appendChild(streakNum);
+
+  bar.appendChild(statScore);
+  bar.appendChild(statStreak);
+  el.appendChild(bar);
+
+  // Question
+  var qDiv = document.createElement('div');
+  qDiv.className = 'quiz-question';
+  qDiv.id = 'q-text';
+  qDiv.textContent = 'Loading...';
+  el.appendChild(qDiv);
+
+  // Feedback
+  var fbDiv = document.createElement('div');
+  fbDiv.id = 'q-feedback';
+  el.appendChild(fbDiv);
+
+  // Input
+  var inputEl = document.createElement('input');
+  inputEl.type = 'text';
+  inputEl.className = 'quiz-input';
+  inputEl.id = 'q-input';
+  inputEl.placeholder = 'Your answer...';
+  inputEl.autocomplete = 'off';
+  inputEl.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (quiz.answered) nextQuizQuestion();
+      else checkAnswer();
+    }
+  });
+  el.appendChild(inputEl);
+
+  // Actions
+  var actions = document.createElement('div');
+  actions.className = 'quiz-actions';
+  actions.id = 'q-actions';
+  var checkBtn = document.createElement('button');
+  checkBtn.className = 'quiz-btn btn-check';
+  checkBtn.id = 'q-check';
+  checkBtn.textContent = 'Check';
+  checkBtn.addEventListener('click', checkAnswer);
+  actions.appendChild(checkBtn);
+  el.appendChild(actions);
+}
+
+function updateQuizDisplay() {
+  var q = quiz.currentQ;
+  if (!q) return;
+
+  var textEl = document.getElementById('q-text');
+  if (textEl) {
+    textEl.textContent = '';
+    textEl.appendChild(document.createTextNode(q.text));
+    var hintSpan = document.createElement('span');
+    hintSpan.className = 'qq-hint';
+    hintSpan.textContent = q.hint;
+    textEl.appendChild(hintSpan);
+  }
+
+  var inputEl = document.getElementById('q-input');
+  if (inputEl) {
+    inputEl.value = '';
+    inputEl.className = 'quiz-input';
+    inputEl.disabled = false;
+    inputEl.focus();
+    inputEl.inputMode = (q.hint.indexOf('letter') !== -1 || q.hint.indexOf('fraction') !== -1) ? 'text' : 'decimal';
+  }
+
+  var fb = document.getElementById('q-feedback');
+  if (fb) fb.textContent = '';
+
+  var actions = document.getElementById('q-actions');
+  if (actions) {
+    actions.textContent = '';
+    var checkBtn = document.createElement('button');
+    checkBtn.className = 'quiz-btn btn-check';
+    checkBtn.textContent = 'Check';
+    checkBtn.addEventListener('click', checkAnswer);
+    actions.appendChild(checkBtn);
+  }
+
+  updateScoreDisplay();
+}
+
+function checkAnswer() {
+  if (quiz.answered || !quiz.currentQ) return;
+
+  var inputEl = document.getElementById('q-input');
+  var userAnswer = inputEl.value.trim();
+  if (!userAnswer) return;
+
+  quiz.answered = true;
+  quiz.total++;
+
+  var correctAnswer = quiz.currentQ.answer;
+  var isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
+
+  // Numeric tolerance for decimal answers
+  if (!isCorrect) {
+    var userNum = parseFloat(userAnswer);
+    var correctNum = parseFloat(correctAnswer);
+    if (!isNaN(userNum) && !isNaN(correctNum) && Math.abs(userNum - correctNum) < 0.02) {
+      isCorrect = true;
+    }
+  }
+
+  if (isCorrect) {
+    quiz.score++;
+    quiz.streak++;
+    inputEl.className = 'quiz-input correct pulse-green';
+  } else {
+    quiz.streak = 0;
+    inputEl.className = 'quiz-input wrong shake';
+  }
+
+  inputEl.disabled = true;
+  updateScoreDisplay();
+
+  // Feedback
+  var fb = document.getElementById('q-feedback');
+  fb.textContent = '';
+  var fbDiv = document.createElement('div');
+  fbDiv.className = 'quiz-feedback anim-up ' + (isCorrect ? 'fb-correct' : 'fb-wrong');
+
+  if (isCorrect) {
+    fbDiv.textContent = 'Correct!';
+  } else {
+    fbDiv.appendChild(document.createTextNode('Wrong!'));
+    var ansSpan = document.createElement('span');
+    ansSpan.className = 'fb-answer';
+    ansSpan.textContent = 'Correct answer: ' + correctAnswer;
+    fbDiv.appendChild(ansSpan);
+  }
+  fb.appendChild(fbDiv);
+
+  // Next button
+  var actions = document.getElementById('q-actions');
+  actions.textContent = '';
+  var nextBtn = document.createElement('button');
+  nextBtn.className = 'quiz-btn btn-next';
+  nextBtn.textContent = 'Next Question \u2192';
+  nextBtn.addEventListener('click', nextQuizQuestion);
+  actions.appendChild(nextBtn);
+}
+
+function nextQuizQuestion() {
+  generateNewQuestion();
+}
+
+function normalizeAnswer(s) {
+  return s.toLowerCase().replace(/\s+/g, '').replace(/^0+(\d)/, '$1');
+}
+
+function updateScoreDisplay() {
+  var scoreEl = document.getElementById('q-score');
+  var totalEl = document.getElementById('q-total');
+  var streakEl = document.getElementById('q-streak');
+  var streakWrap = document.getElementById('q-streak-wrap');
+  if (scoreEl) scoreEl.textContent = quiz.score;
+  if (totalEl) totalEl.textContent = quiz.total;
+  if (streakEl) streakEl.textContent = quiz.streak;
+  if (streakWrap) {
+    if (quiz.streak >= 3) streakWrap.classList.add('on-fire');
+    else streakWrap.classList.remove('on-fire');
+  }
+}
+
+// ══════════════════════════ INIT ══════════════════════════
+render();
 </script>
 </body>
 </html>
