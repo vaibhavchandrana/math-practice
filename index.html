@@ -529,6 +529,66 @@ body::after {
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.range-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin: 20px 0;
+}
+.range-picker select {
+  padding: 12px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.25s;
+  min-width: 80px;
+  text-align: center;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238e8fa0' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+.range-picker select:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px var(--cyan-dim);
+}
+.range-picker .range-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.range-start-btn {
+  width: 100%;
+  padding: 18px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--cyan);
+  color: var(--bg);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+.range-start-btn:hover {
+  box-shadow: 0 6px 24px rgba(34,211,168,0.3);
+  transform: translateY(-1px);
+}
+.range-start-btn:active { transform: scale(0.97); }
 @media (max-width: 380px) {
   .topics-grid { grid-template-columns: 1fr; }
   .quiz-question { font-size: 1.8rem; padding: 28px 16px; }
@@ -555,6 +615,7 @@ var currentTab = 'learn';
 var currentView = 'home';
 var currentTopic = null;
 var quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null };
+var tableRange = { min: 1, max: 30 };
 var tablePage = 0;
 var TABLES_PER_PAGE = 3;
 var TOTAL_TABLE_PAGES = Math.ceil(30 / TABLES_PER_PAGE);
@@ -610,8 +671,23 @@ function showDetail(topicId) {
 }
 
 function startQuiz(topicId) {
+  if (topicId === 'tables') {
+    currentView = 'range-pick';
+    currentTopic = topicId;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
   currentView = 'quiz';
   currentTopic = topicId;
+  quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null };
+  render();
+  generateNewQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function launchTableQuiz() {
+  currentView = 'quiz';
   quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null };
   render();
   generateNewQuestion();
@@ -631,6 +707,7 @@ function getContent() { return document.getElementById('content'); }
 function render() {
   if (currentView === 'home') renderHome();
   else if (currentView === 'detail') renderDetail();
+  else if (currentView === 'range-pick') renderRangePicker();
   else if (currentView === 'quiz') renderQuizScreen();
 }
 
@@ -1066,6 +1143,93 @@ function buildDegreeDetail(el) {
   el.appendChild(card3);
 }
 
+// ══════════════════════════ RANGE PICKER ══════════════════════════
+function renderRangePicker() {
+  var el = getContent();
+  el.textContent = '';
+
+  // Header
+  var header = document.createElement('div');
+  header.className = 'detail-header';
+  var backBtn = document.createElement('button');
+  backBtn.className = 'back-btn';
+  backBtn.textContent = '\u2190 Back';
+  backBtn.addEventListener('click', goHome);
+  var title = document.createElement('h2');
+  title.textContent = 'Tables Quiz';
+  header.appendChild(backBtn);
+  header.appendChild(title);
+  el.appendChild(header);
+
+  // Card
+  var card = document.createElement('div');
+  card.className = 'card anim-up';
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Select Table Range';
+  card.appendChild(h3);
+
+  // Range picker row
+  var row = document.createElement('div');
+  row.className = 'range-picker';
+
+  var lblFrom = document.createElement('span');
+  lblFrom.className = 'range-label';
+  lblFrom.textContent = 'From';
+
+  var selFrom = document.createElement('select');
+  selFrom.id = 'range-from';
+  for (var i = 1; i <= 30; i++) {
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i;
+    if (i === tableRange.min) opt.selected = true;
+    selFrom.appendChild(opt);
+  }
+
+  var lblTo = document.createElement('span');
+  lblTo.className = 'range-label';
+  lblTo.textContent = 'To';
+
+  var selTo = document.createElement('select');
+  selTo.id = 'range-to';
+  for (var j = 1; j <= 30; j++) {
+    var opt2 = document.createElement('option');
+    opt2.value = j;
+    opt2.textContent = j;
+    if (j === tableRange.max) opt2.selected = true;
+    selTo.appendChild(opt2);
+  }
+
+  // Sync: ensure From <= To
+  selFrom.addEventListener('change', function() {
+    var fromVal = parseInt(selFrom.value);
+    if (fromVal > parseInt(selTo.value)) selTo.value = fromVal;
+  });
+  selTo.addEventListener('change', function() {
+    var toVal = parseInt(selTo.value);
+    if (toVal < parseInt(selFrom.value)) selFrom.value = toVal;
+  });
+
+  row.appendChild(lblFrom);
+  row.appendChild(selFrom);
+  row.appendChild(lblTo);
+  row.appendChild(selTo);
+  card.appendChild(row);
+
+  // Start button
+  var startBtn = document.createElement('button');
+  startBtn.className = 'range-start-btn';
+  startBtn.textContent = 'Start Quiz \u2192';
+  startBtn.addEventListener('click', function() {
+    tableRange.min = parseInt(selFrom.value);
+    tableRange.max = parseInt(selTo.value);
+    launchTableQuiz();
+  });
+  card.appendChild(startBtn);
+
+  el.appendChild(card);
+}
+
 // ══════════════════════════ QUIZ ══════════════════════════
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -1077,7 +1241,7 @@ function generateNewQuestion() {
 
   switch (currentTopic) {
     case 'tables':
-      var tn = rand(1, 30), tm = rand(2, 10);
+      var tn = rand(tableRange.min, tableRange.max), tm = rand(2, 10);
       q = { text: tn + ' \u00d7 ' + tm + ' = ?', answer: String(tn * tm), hint: 'Type the number' };
       break;
     case 'squares':
