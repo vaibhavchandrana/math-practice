@@ -1208,8 +1208,7 @@ function renderQuizScreen() {
   inputEl.autocomplete = 'off';
   inputEl.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
-      if (quiz.answered) nextQuizQuestion();
-      else checkAnswer();
+      if (!quiz.answered) checkAnswer();
     }
   });
   el.appendChild(inputEl);
@@ -1317,14 +1316,20 @@ function checkAnswer() {
   }
   fb.appendChild(fbDiv);
 
-  // Next button
+  // Auto-advance on correct answer, show Next button on wrong
   var actions = document.getElementById('q-actions');
   actions.textContent = '';
-  var nextBtn = document.createElement('button');
-  nextBtn.className = 'quiz-btn btn-next';
-  nextBtn.textContent = 'Next Question \u2192';
-  nextBtn.addEventListener('click', nextQuizQuestion);
-  actions.appendChild(nextBtn);
+  if (isCorrect) {
+    setTimeout(function() {
+      if (quiz.answered) nextQuizQuestion();
+    }, 800);
+  } else {
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'quiz-btn btn-next';
+    nextBtn.textContent = 'Next Question \u2192';
+    nextBtn.addEventListener('click', nextQuizQuestion);
+    actions.appendChild(nextBtn);
+  }
 }
 
 function nextQuizQuestion() {
