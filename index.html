@@ -614,7 +614,7 @@ body::after {
 var currentTab = 'learn';
 var currentView = 'home';
 var currentTopic = null;
-var quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null };
+var quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null, pool: [] };
 var tableRange = { min: 1, max: 30 };
 var tablePage = 0;
 var TABLES_PER_PAGE = 3;
@@ -680,7 +680,7 @@ function startQuiz(topicId) {
   }
   currentView = 'quiz';
   currentTopic = topicId;
-  quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null };
+  quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null, pool: [] };
   render();
   generateNewQuestion();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -688,7 +688,7 @@ function startQuiz(topicId) {
 
 function launchTableQuiz() {
   currentView = 'quiz';
-  quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null };
+  quiz = { score: 0, total: 0, streak: 0, answered: false, currentQ: null, pool: [] };
   render();
   generateNewQuestion();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1235,69 +1235,70 @@ function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function generateNewQuestion() {
-  quiz.answered = false;
-  var q;
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
 
+function buildPool() {
+  var pool = [];
+  var i, f, ai, ach, arev;
   switch (currentTopic) {
     case 'tables':
-      var tn = rand(tableRange.min, tableRange.max), tm = rand(2, 10);
-      q = { text: tn + ' \u00d7 ' + tm + ' = ?', answer: String(tn * tm), hint: 'Type the number' };
+      for (var tn = tableRange.min; tn <= tableRange.max; tn++)
+        for (var tm = 2; tm <= 10; tm++)
+          pool.push({ text: tn + ' \u00d7 ' + tm + ' = ?', answer: String(tn * tm), hint: 'Type the number' });
       break;
     case 'squares':
-      var sn = rand(1, 50);
-      q = { text: sn + '\u00b2 = ?', answer: String(sn * sn), hint: 'Type the square' };
+      for (i = 1; i <= 50; i++)
+        pool.push({ text: i + '\u00b2 = ?', answer: String(i * i), hint: 'Type the square' });
       break;
     case 'cubes':
-      var cn = rand(1, 30);
-      q = { text: cn + '\u00b3 = ?', answer: String(cn * cn * cn), hint: 'Type the cube' };
+      for (i = 1; i <= 30; i++)
+        pool.push({ text: i + '\u00b3 = ?', answer: String(i * i * i), hint: 'Type the cube' });
       break;
     case 'consec':
-      var xn = rand(11, 24);
-      q = { text: xn + ' \u00d7 ' + (xn + 1) + ' = ?', answer: String(xn * (xn + 1)), hint: 'Type the product' };
+      for (i = 11; i <= 24; i++)
+        pool.push({ text: i + ' \u00d7 ' + (i + 1) + ' = ?', answer: String(i * (i + 1)), hint: 'Type the product' });
       break;
     case 'fractions':
-      var f = ALL_FRACTIONS[rand(0, ALL_FRACTIONS.length - 1)];
-      if (Math.random() < 0.5) {
+      for (i = 0; i < ALL_FRACTIONS.length; i++) {
+        f = ALL_FRACTIONS[i];
         var pctStr = f.pct % 1 === 0 ? String(f.pct) : f.pct.toFixed(2);
-        q = { text: f.n + '/' + f.d + ' = ? %', answer: pctStr, hint: 'Type percentage (e.g. 12.5)' };
-      } else {
         var pctLabel = f.pct % 1 === 0 ? f.pct + '%' : f.pct.toFixed(2) + '%';
-        q = { text: pctLabel + ' = ?', answer: f.n + '/' + f.d, hint: 'Type fraction (e.g. 1/8)' };
+        pool.push({ text: f.n + '/' + f.d + ' = ? %', answer: pctStr, hint: 'Type percentage (e.g. 12.5)' });
+        pool.push({ text: pctLabel + ' = ?', answer: f.n + '/' + f.d, hint: 'Type fraction (e.g. 1/8)' });
       }
       break;
     case 'alphabet':
-      var ai = rand(1, 26);
-      var ach = String.fromCharCode(64 + ai);
-      var arev = String.fromCharCode(64 + (27 - ai));
-      var atype = rand(0, 2);
-      if (atype === 0) {
-        q = { text: 'Position of  ' + ach + '  ?', answer: String(ai), hint: 'Type the number (1-26)' };
-      } else if (atype === 1) {
-        q = { text: 'Reverse of  ' + ach + '  ?', answer: arev, hint: 'Type the letter' };
-      } else {
-        q = { text: 'Letter at position  ' + ai + '  ?', answer: ach, hint: 'Type the letter' };
+      for (ai = 1; ai <= 26; ai++) {
+        ach = String.fromCharCode(64 + ai);
+        arev = String.fromCharCode(64 + (27 - ai));
+        pool.push({ text: 'Position of  ' + ach + '  ?', answer: String(ai), hint: 'Type the number (1-26)' });
+        pool.push({ text: 'Reverse of  ' + ach + '  ?', answer: arev, hint: 'Type the letter' });
+        pool.push({ text: 'Letter at position  ' + ai + '  ?', answer: ach, hint: 'Type the letter' });
       }
       break;
     case 'degree':
       var degs = [36,45,60,72,90,108,120,144,180,216,240,252,270,288,324,360];
       var pcts = [10,12.5,16.67,20,25,30,33.33,40,50,60,66.67,70,75,80,90,100];
-      if (Math.random() < 0.5) {
-        var di = rand(0, pcts.length - 1);
-        var dp = pcts[di];
-        var dd = degs[di];
-        q = { text: (dp % 1 === 0 ? dp + '%' : dp.toFixed(2) + '%') + ' = ? \u00b0', answer: String(dd), hint: 'Type degrees' };
-      } else {
-        var di2 = rand(0, degs.length - 1);
-        var dd2 = degs[di2];
-        var dp2 = pcts[di2];
-        var dpStr = dp2 % 1 === 0 ? String(dp2) : dp2.toFixed(2);
-        q = { text: dd2 + '\u00b0 = ? %', answer: dpStr, hint: 'Type percentage' };
+      for (i = 0; i < pcts.length; i++) {
+        var dp = pcts[i], dd = degs[i];
+        pool.push({ text: (dp % 1 === 0 ? dp + '%' : dp.toFixed(2) + '%') + ' = ? \u00b0', answer: String(dd), hint: 'Type degrees' });
+        pool.push({ text: dd + '\u00b0 = ? %', answer: (dp % 1 === 0 ? String(dp) : dp.toFixed(2)), hint: 'Type percentage' });
       }
       break;
   }
+  return shuffle(pool);
+}
 
-  quiz.currentQ = q;
+function generateNewQuestion() {
+  quiz.answered = false;
+  if (quiz.pool.length === 0) quiz.pool = buildPool();
+  quiz.currentQ = quiz.pool.pop();
   updateQuizDisplay();
 }
 
